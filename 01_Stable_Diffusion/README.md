@@ -11,7 +11,7 @@ easy and inexpensive way to play with Stable Diffusion.
 
 Video (WIP)
 
-## 02 Calling your service from anywhere
+## 02 Calling your service from anywhere, and some fun with GPT-2
 
 Video (WIP)
 
@@ -34,3 +34,34 @@ Video (WIP)
 ## 07 Sharing your service with friends
 
 Video (WIP)
+
+# Appendices
+
+## Saving and Loading Secrets from Vault
+
+There are a few ways to save secrets to Runhouse to make
+them available conveniently across environments.
+
+If your secrets are saved into your local environment (e.g. `~/.aws/...`), 
+the fastest way to save them is to run `runhouse login` in your command line 
+(or `runhouse.login()` in a Python interpreter), which will prompt you for 
+your Runhouse token and ask if you'd like to upload secrets. It will then 
+extract secrets from your environment and upload them to Vault. Alternatively, 
+you can run:
+```
+import runhouse as rh
+rh.Secrets.extract_and_upload_secrets()
+```
+
+To add locally stored secrets for a specific provider (AWS, Azure, GCP):
+```
+rh.Secrets.put(provider="aws")
+```
+
+To add secrets for a custom provider or those not stored in local config files, use:
+
+```
+rh.Secrets.put(provider="snowflake", secret={"private_key": "************"})
+```
+These will not be automatically loaded into new environments via `runhouse login`,
+but can be accessed in code via `rh.Secrets.get(provider="snowflake")`.
