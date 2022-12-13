@@ -15,6 +15,8 @@ Video (WIP)
 
 Video (WIP)
 
+[This tutorial is meant to be run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/p02_Colab_Stable_Diffusion.ipynb)
+
 ## 03 Putting Dalle-Mini on a TPU
 
 Video (WIP)
