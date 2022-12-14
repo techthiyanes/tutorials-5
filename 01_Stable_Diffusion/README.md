@@ -7,35 +7,57 @@ layer into your own cloud compute and data resources. Let's
 start with a simple example of how to use Runhouse to make an
 easy and inexpensive way to play with Stable Diffusion.
 
-## 01 A Stable Diffusion service on AWS in 5 lines of code
+## 01 [A Stable Diffusion service on a cloud V100 in 5 lines of code](./p01_sd_generate.py)
 
-Video (WIP)
+We'll start by using Runhouse to experiment with Stable 
+Diffusion from your laptop, while the model actually runs on a V100
+in the cloud. The code is meant to be read in Github, or run locally on your 
+laptop with:
+```commandline
+python p01_sd_generate.py
+```
+State: **Working.** \
+Video: (WIP)
 
-## 02 Calling your service from anywhere, and some fun with GPT-2
+## 02 [Calling your service from anywhere, and some fun with GPT-2](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/p02_Colab_Stable_Diffusion.ipynb)
 
-Video (WIP)
+We can call the Stable Diffusion function you ran on a V100 above from Colab
+with no setup, installations, or changes. You can access it from anywhere with a python
+interpreter and an internet connection.
+This tutorial is meant to be [run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/p02_Colab_Stable_Diffusion.ipynb)
+Status: **Working.**
+Video: (WIP)
 
-[This tutorial is meant to be run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/p02_Colab_Stable_Diffusion.ipynb)
+## 03 Running Dalle-Mini on a TPU
 
-## 03 Putting Dalle-Mini on a TPU
+Video: WIP \
+Status: WIP
 
-Video (WIP)
+## 04 [Experimenting with Dalle-Mini->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/p04_Colab_Dalle_Mini_to_Stable_Diffusion.ipynb)
 
-## 04 Experimenting with Dalle-Mini->SD-Image-to-Image in Colab
-
-Video (WIP)
+Video: WIP \
+Status: Working, but stale (may require some fiddling).
 
 ## 05 Deploying DM->SD as a multi-hop service (and multi-cloud!)
 
-Video (WIP)
+Video: WIP \
+Status: WIP
 
-## 06 Pinning objects to GPU memory to improve performance
+## 06 [Pinning objects to GPU memory to improve performance](./p06_object_pinning.py)
 
-Video (WIP)
+This tutorial shows how you can achieve high performance serving with 
+Runhouse by pinning models to GPU memory, down to ~2.5s/image with Stable Diffusion 2 
+(without compilation!). It's meant to be read in Github, or run locally on your laptop with:
+```commandline
+python p06_object_pinning.py
+```
+Status: **Working.** \
+Video: WIP
 
 ## 07 Sharing your service with friends
 
-Video (WIP)
+Video: WIP \
+Status: WIP
 
 # Appendices
 
