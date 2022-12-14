@@ -22,7 +22,7 @@ def sd_generate_with_multinode_pinning(prompt, num_images=1, steps=100,
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=True)
+    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=False)
     generate_gpu = rh.send(fn=sd_generate_with_simple_pinning, hardware=gpu,
                            reqs=['./', 'diffusers'], load_secrets=True)
     rh_prompt = 'A hot dog made of matcha powder.'

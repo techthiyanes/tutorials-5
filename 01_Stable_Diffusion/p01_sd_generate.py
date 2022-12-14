@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # credentials saved in your environment (e.g. ~/.aws/...). You can run `sky check` in your terminal to see
     # which cloud providers you're set up to use. You can set a specific provider by passing `provider='gcp'`,
     # or a specific instance type like `instance_type='p3.2xlarge'`.
-    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=True)
+    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=False)
 
     # Now we'll send our function to our v100. Note that this step can take several minutes the first time you run it,
     # while we wait for hardware to be provisioned and install the dependencies. Once the cluster is already up, you
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # `ssh rh-v100` to ssh into the cluster from the command line.
 
     # generate_gpu.notebook()
-    # will install JupyterHub on the cluster, start a new JupyterHub server, and tunnel you into it (as
+    # will install JupyterLab on the cluster, start a new JupyterLab server, and tunnel you into it (as
     # long as you have a browser on your local machine). This might make more sense in an interactive
     # Python interpreter.
 
