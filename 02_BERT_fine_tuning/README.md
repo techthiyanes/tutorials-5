@@ -10,6 +10,10 @@ storage. You'll see how many of the resources we create along
 the way are general-purpose, and suitable to be reused among 
 a team.
 
+This tutorial will demonstrate BERT fine-tuning for sentiment analysis
+using the Yelp reviews dataset, largely based on this [Hugging Face 
+tutorial](https://huggingface.co/docs/transformers/training).
+
 ## 01 Distributing preprocessing across many CPUs with Hugging Face 🤗 Datasets
 
 Video (WIP)

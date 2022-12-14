@@ -1,23 +1,19 @@
 from transformers import AutoModelForSequenceClassification, get_scheduler
 from accelerate import Accelerator
+import ray.cloudpickle as pickle
 import torch
+from torch.utils.data import DataLoader
 import runhouse as rh
 from tqdm.auto import tqdm  # progress bar
 
-def fine_tune_bert(preprocessed_data_name, epochs, model_out_name):
+
+def fine_tune_model(preprocessed_data, model, optimizer, num_epochs=3, batch_size=8):
     accelerator = Accelerator()
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-cased", num_labels=5)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-5)
 
-    preprocessed_data = rh.Table(name=preprocessed_data_name)
-    train_dataloader = preprocessed_data['train'].stream(shuffle=True, batch_size=8)
-    eval_dataloader = preprocessed_data['test'].stream(batch_size=8)
+    train_dataloader = DataLoader(preprocessed_data['train'], shuffle=True, batch_size=batch_size)
+    train_dataloader, model, optimizer = accelerator.prepare(train_dataloader, model, optimizer)
 
-    train_dataloader, eval_dataloader, model, optimizer = accelerator.prepare(
-        train_dataloader, eval_dataloader, model, optimizer
-    )
-
-    num_training_steps = epochs * len(train_dataloader)
+    num_training_steps = num_epochs * len(train_dataloader)
     lr_scheduler = get_scheduler(
         name="linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
     progress_bar = tqdm(range(num_training_steps))
@@ -34,27 +30,24 @@ def fine_tune_bert(preprocessed_data_name, epochs, model_out_name):
             optimizer.zero_grad()
             progress_bar.update(1)
 
-        metric = load_metric("accuracy")
-        model.eval()
-        for batch in eval_dataloader:
-            with torch.no_grad():
-                outputs = model(**batch)
+    return rh.blob(data=pickle.dumps(model))
 
-            logits = outputs.logits
-            predictions = torch.argmax(logits, dim=-1)
-            metric.add_batch(predictions=predictions, references=batch["labels"])
 
-        metric.compute()
-        print(f'Epoch {epoch} accuracy: {metric}')
+def get_model_and_optimizer(num_labels, lr, model_id='bert-base-cased'):
+    model = AutoModelForSequenceClassification.from_pretrained(model_id, num_labels=num_labels)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    return model, optimizer
 
-    return rh.current_folder().put({model_out_name: pickle.dumps(model)})
 
 if __name__ == "__main__":
-    my_8_gpus = rh.cluster(provider='aws',
-                           name='my_8_gpus')
-    bert_ft = rh.Send(fn=fine_tune_bert,
-                      hardware='my_8_gpus',
-                      name='BERT_finetune_8gpu')
-    trained_model = bert_ft(preprocessed_data_name='yelp_bert_preprocessed',
-                            epochs=3,
-                            model_out_name='yelp_fine_tuned_bert')
+    rh.set_folder('~/bert/sentiment_analysis', create=True)
+    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
+    bert_model, adam_optimizer = get_model_and_optimizer(model_id='bert-base-cased', num_labels=5, lr=5e-5)
+
+    gpus = rh.cluster(name='4-v100s', instance_type='V100:4', provider='cheapest', use_spot=False)
+    ft_model = rh.Send(fn=fine_tune_model, hardware=gpus, name='finetune_ddp_4gpu')
+    trained_model = ft_model(preprocessed_table,
+                             bert_model,
+                             adam_optimizer,
+                             epochs=3).from_cluster(gpus)
+    trained_model.save(name='yelp_fine_tuned_bert', save_to=['rns', 'local'])
