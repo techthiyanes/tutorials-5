@@ -21,13 +21,27 @@ a ways away from having our first stable release. We are sharing
 it privately with a few select people to collect feedback, and
 expect a lot of things to break off the bat.
 
-## Getting Help
+## 🙋‍♂️ Getting Help
 
 Please request to join our 
 [slack workspace here](https://join.slack.com/t/runhouse/shared_invite/zt-1j7pwsok1-vQy0Gesh55A2fPyyEVq8nQ), 
 or email us, or create an issue.
 
-## Installation
+## 🕵️‍♀️ Where is the compute?
+
+Runhouse is not managed compute or data. All of the compute and data in Runhouse
+lives within your own infra and cloud provider accounts. As such, you'll need 
+credentials with at least one of AWS, GCP, or Azure to try these tutorials,
+as well as quota approval for GPU resources 
+([See here](https://skypilot.readthedocs.io/en/latest/reference/quota.html) 
+for more on this). If you're looking for a managed compute 
+experience without a cloud account, we'd recommend our friends at 
+[Modal Labs](https://modal.com/) or [Anyscale](https://anyscale.com/). At some point
+we plan to support them as compute providers in Runhouse as well. Other sources of compute,
+such as on-prem or Kubernetes, are also on the roadmap (likely through our friends at 
+[SkyPilot](https://skypilot.readthedocs.io/)).
+
+## 🔌 Installation
 
 ⚠️ On Apple M1 or M2 machines ⚠️, you will need to install grpcio with conda
 before you install Runhouse - more specifically, before you install Ray. 
@@ -45,7 +59,7 @@ Github. It can be installed with:
 As we apply patches we may update this version number. We will
 notify you if we want you to upgrade your installation.
 
-## Creating an Account for Secrets and Resources
+## 🔒 Creating an Account for Secrets and Resources
 
 tldr; See this video (WIP) about what features creating an account enables.
 
@@ -82,7 +96,7 @@ time, but you can probably just ignore this for now. We provide reasonable
 defaults in Runhouse, such as selecting the cheapest cloud provider (for which
 you have appropriate credentials) for the given hardware.
 
-### Checking and Managing your Clusters with SkyPilot
+## ✈️ Checking and Managing your Clusters with SkyPilot
 
 Runhouse uses [SkyPilot](https://skypilot.readthedocs.io/en/latest/) for 
 much of the heavy lifting with the cloud providers. SkyPilot is a Python
@@ -111,7 +125,7 @@ cluster to autostop after that many minutes of inactivity. By default this
 number is 10 minutes, but you can set it to -1 to disable autostop entirely.
 You can set your default autostop in `~/.rh/config.yaml`.
 
-## Contributing
+## 👷‍♀️ Contributing
 
 We welcome contributions! Please contact us if you're interested. There 
 is so much to do.
