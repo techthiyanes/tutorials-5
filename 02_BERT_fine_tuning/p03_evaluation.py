@@ -30,7 +30,7 @@ if __name__ == "__main__":
     preprocessed_table = rh.table(name="yelp_bert_preprocessed")
     trained_model = pickle.loads(rh.blob(name='yelp_fine_tuned_bert', load_from=['rns', 'local']).data)
 
-    model_eval = rh.Send(fn=evaluate_model,
+    model_eval = rh.send(fn=evaluate_model,
                          hardware='4-v100s',
                          name='evaluate_model')
     test_accuracy = model_eval(preprocessed_table, trained_model)

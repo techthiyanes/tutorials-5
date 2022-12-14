@@ -45,7 +45,7 @@ if __name__ == "__main__":
     bert_model, adam_optimizer = get_model_and_optimizer(model_id='bert-base-cased', num_labels=5, lr=5e-5)
 
     gpus = rh.cluster(name='4-v100s', instance_type='V100:4', provider='cheapest', use_spot=False)
-    ft_model = rh.Send(fn=fine_tune_model, hardware=gpus, name='finetune_ddp_4gpu')
+    ft_model = rh.send(fn=fine_tune_model, hardware=gpus, name='finetune_ddp_4gpu')
     trained_model = ft_model(preprocessed_table,
                              bert_model,
                              adam_optimizer,

@@ -32,7 +32,7 @@ def simple_bert_fine_tuning_service(dataset,
         trained_model = pickle.loads(rh.blob(name=model_name, load_from=['rns', 'local']).data)
 
     # Evaluate
-    model_eval = rh.Send(name='evaluate_model')
+    model_eval = rh.send(name='evaluate_model')
     test_accuracy = model_eval(preprocessed_table, trained_model)
     assert test_accuracy > 0.8, "Model accuracy is too low for production!"
 
