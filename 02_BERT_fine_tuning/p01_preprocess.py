@@ -12,7 +12,7 @@ def tokenize_function(examples):
 
 def tokenize_dataset(hf_dataset):
     if isinstance(hf_dataset, str) and rh.exists(hf_dataset, load_from=['rns', 'local']):
-        hf_dataset = rh.table(hf_dataset).convert_to('hf_dataset')
+        hf_dataset = rh.table(name=hf_dataset).convert_to('hf_dataset')
 
     preprocessed = hf_dataset.map(tokenize_function,
                                   input_columns=['text'],

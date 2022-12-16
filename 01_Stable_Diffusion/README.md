@@ -74,7 +74,7 @@ extract secrets from your environment and upload them to Vault. Alternatively,
 you can run:
 ```
 import runhouse as rh
-rh.Secrets.extract_and_upload_secrets()
+rh.Secrets.extract_and_upload()
 ```
 
 To add locally stored secrets for a specific provider (AWS, Azure, GCP):
