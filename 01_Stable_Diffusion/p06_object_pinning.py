@@ -24,7 +24,7 @@ def sd_generate_with_multinode_pinning(prompt, num_images=1, steps=100,
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=False)
     generate_gpu = rh.send(fn=sd_generate_with_simple_pinning, hardware=gpu,
-                           reqs=['./', 'diffusers'], load_secrets=True)
+                           reqs=['./', 'diffusers'], load_secrets=False)
     rh_prompt = 'A hot dog made of matcha powder.'
     images = generate_gpu(rh_prompt, num_images=4, steps=50)
     [image.show() for image in images]

@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # you run this file it can take several minutes, and after that it's very fast, mostly just the remote execution
     # of the function itself.
     generate_gpu = rh.send(fn=sd_generate, hardware=gpu,
-                           reqs=['./', 'diffusers'], load_secrets=True,
+                           reqs=['./', 'diffusers'], load_secrets=False,
                            name='sd_generate', save_to=['rns'])
 
     # generate_gpu is a Python callable just like our original function. We can call it and get back results just
