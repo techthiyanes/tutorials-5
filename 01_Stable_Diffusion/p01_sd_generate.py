@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # credentials saved in your environment (e.g. ~/.aws/...). You can run `sky check` in your terminal to see
     # which cloud providers you're set up to use. You can set a specific provider by passing `provider='gcp'`,
     # or a specific instance type like `instance_type='p3.2xlarge'`.
-    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=False)
+    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
 
     # Now we'll send our function to our v100. Note that this step can take several minutes the first time you run it,
     # while we wait for hardware to be provisioned and install the dependencies. Once the cluster is already up, you
@@ -33,15 +33,15 @@ if __name__ == "__main__":
     # you run this file it can take several minutes, and after that it's very fast, mostly just the remote execution
     # of the function itself.
     generate_gpu = rh.send(fn=sd_generate, hardware=gpu,
-                           reqs=['./', 'diffusers'], load_secrets=False,
+                           reqs=['./', 'torch==1.12.0', 'diffusers'],
                            name='sd_generate', save_to=['rns'])
 
     # generate_gpu is a Python callable just like our original function. We can call it and get back results just
     # like we would locally, as long as the inputs and outputs are serializable with cloudpickle and <2GB (a soft
     # limit we've set in grpc but can change if needed).
     # The first time we call the below it will need to download the model onto the cluster, which can take a minute.
-    rh_prompt = 'A digital illustration of a woman running on the roof of a house.'
-    images = generate_gpu(rh_prompt, num_images=2, steps=50)
+    my_prompt = 'A digital illustration of a woman running on the roof of a house.'
+    images = generate_gpu(my_prompt, num_images=2, steps=50)
     [image.show() for image in images]
 
     # We can reuse generate_gpu as much as we please, and after the first execution it will run much faster

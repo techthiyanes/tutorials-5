@@ -22,11 +22,12 @@ def sd_generate_with_multinode_pinning(prompt, num_images=1, steps=100,
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest', use_spot=False)
+    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
     generate_gpu = rh.send(fn=sd_generate_with_simple_pinning, hardware=gpu,
-                           reqs=['./', 'diffusers'], load_secrets=False)
-    rh_prompt = 'A hot dog made of matcha powder.'
-    images = generate_gpu(rh_prompt, num_images=4, steps=50)
+                           reqs=['local:./', 'torch==1.12.0', 'diffusers'])
+    my_prompt = 'A hot dog made of matcha powder.'
+    images = generate_gpu(my_prompt,
+                          num_images=4, steps=50)
     [image.show() for image in images]
 
     # You can find more techniques for speeding up Stable Diffusion here:
