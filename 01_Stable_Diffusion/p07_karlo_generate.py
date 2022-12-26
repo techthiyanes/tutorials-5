@@ -15,7 +15,8 @@ def unclip_generate(prompt,
 
 
 if __name__ == "__main__":
-    # This is a bit too small, need to switch to A10G
+    # Single A10G is only available on AWS, but you can use an A100 on GCP or Azure instead.
+    # See this helpful guide to cloud GPUs for more details: https://www.paperspace.com/gpu-cloud-comparison
     gpu = rh.cluster(name='rh-a10g', instance_type='A10G:1', provider='cheapest')
     generate_karlo_gpu = rh.send(fn=unclip_generate,
                                  hardware=gpu,
@@ -24,8 +25,8 @@ if __name__ == "__main__":
     # We need to install PyTorch for CUDA 11.6 on A10G or A100, you can comment this out after the first run.
     gpu.run(['pip3 install torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116'])
     # If you're running into CUDA errors and just installed the torch version above, you may need to
-    # restart the gRPC server to freshly import the package.
-    # gpu.restart_grpc_server()
+    # restart the gRPC server on the cluster to freshly import the package.
+    # gpu.restart_grpc_server(resync_rh=False)
 
     # The model takes a long time to download and send to GPU the first time you run, but after that it only takes
     # 4 seconds per image.

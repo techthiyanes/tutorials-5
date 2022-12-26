@@ -29,11 +29,7 @@ if __name__ == "__main__":
     gpu.run(['pip3 install torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116'])
     # If you're running into CUDA errors and just installed the torch version above, you may need to
     # restart the gRPC server to freshly import the package.
-    # gpu.restart_grpc_server()
-
-    # If you're running into CUDA errors and just installed the torch version above, you may need to
-    # restart the gRPC server to freshly import the package.
-    # gpu.restart_grpc_server()
+    # gpu.restart_grpc_server(resync_rh=True)
 
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_dm_gpu(my_prompt, num_images_sqrt=1, seed=random.randint(0, 1000))
