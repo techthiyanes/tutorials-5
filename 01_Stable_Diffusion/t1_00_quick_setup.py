@@ -1,15 +1,21 @@
+# Before running this script, be sure to install the latest version of Runhouse:
+# pip install git+https://github.com/run-house/runhouse.git@latest_patch
+
 import runhouse as rh
 
 # ----------- Logging In ------------
-# In order to use Runhouse across environemnts, such as reusing a service from inside a Colab
+# In order to use Runhouse across environments, such as reusing a service from inside a Colab
 # or loading secrets or configs into a remote environment, you'll need to create an account and log in.
 # You don't need to create an account or log in if you only plan to use Runhouse's APIs in a single
-# environemnt, and don't plan to share resources with others.
+# environment, and don't plan to share resources with others.
 
 # Run this code wherever your cloud credentials are already saved, such as your laptop.
 # Follow the prompts to log in. If this is your first time logging in, you should probably upload your secrets,
 # but none of the other prompts will have any effect.
-rh.login()
+rh.login(upload_secrets=True)
+
+# You can do this interactively by running the following in your command line:
+# `runhouse login`
 
 # ----------- Setting Config Options ------------
 # Runhouse stores user configs both locally in `~/.rh/config.yaml` and remotely in the Runhouse database.

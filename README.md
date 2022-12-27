@@ -5,10 +5,10 @@ the tools and usage patterns of Runhouse. We've devised them
 to chart a path through our most exciting features, but you're 
 welcome to hop around if you prefer.
 
-1. [Getting Started 🐣 - Fun with Stable Diffusion and Dalle-Mini](./01_Stable_Diffusion/README.md)
-1. [Runhouse Basics 🧑‍🏫 - Fine-tuning BERT on Multiple GPUs and Deploying](./02_BERT_fine_tuning/README.md)
-1. [Fancy Runhouse 🧑‍🎨 - Dreambooth and TIMM in <10 Minutes](./03_Existing_code/README.md)
-1. [Runhouse in Production 🧑‍🔧 - DLRM Online Training and Deployment](./04_Online_learning/README.md)
+1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and DALL-E](./01_Stable_Diffusion/README.md)
+1. [A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT on Multiple GPUs and Deploying](./02_BERT_fine_tuning/README.md)
+1. [Fancy Runhouse 🧑‍🎨 - Dreambooth or TIMM in <10 Minutes](./03_Existing_code/README.md)
+1. [Online Runhouse 👩‍💻 - DLRM Online Training and Deployment](./04_Online_learning/README.md)
 
 If you would be so kind, we would love if you could have a notes doc open
 as you install and try Runhouse for the first time. Your first impressions, 

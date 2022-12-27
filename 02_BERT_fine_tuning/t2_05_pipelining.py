@@ -2,8 +2,8 @@ import pickle
 
 import runhouse as rh
 
-from p02_fine_tune import get_model_and_optimizer
-from p04_inference import create_prediction_service
+from t2_02_fine_tune import get_model_and_optimizer
+from t2_04_inference import create_prediction_service
 
 
 def simple_bert_fine_tuning_service(dataset,

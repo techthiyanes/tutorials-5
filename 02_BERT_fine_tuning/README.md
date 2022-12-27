@@ -1,4 +1,4 @@
-# Runhouse Basics 🧑‍🏫 - Fine-tuning BERT on Multiple GPUs and Deploying
+# A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT on Multiple GPUs and Deploying
 
 _Watch time: ~10 minutes_
 
