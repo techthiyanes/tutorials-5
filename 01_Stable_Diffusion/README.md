@@ -7,11 +7,15 @@ layer into your own cloud compute and data resources. Let's
 start with a simple example of how to use Runhouse to make an
 easy and inexpensive way to play with Stable Diffusion.
 
-## 00 [Quick setup](t1_00_quick_setup.py)
+## 00 [Quick setup](./t1_00_quick_setup.py)
 
-This script will show you how to login and set a few default configurations.
+This script will show you how to login and set a few default configurations. 
+The code is meant to be read in Github, or run locally on your laptop with:
+```commandline
+python t1_00_quick_setup.py
+```
 State: **Working.** \
-Video: (WIP)
+Video: [Link](https://www.loom.com/share/24238a5296264bdebe095f1189b51acf)
 
 ## 01 [A Stable Diffusion service on a cloud V100 in 5 lines of code](./t1_01_sd_generate.py)
 
@@ -20,7 +24,7 @@ Diffusion from your laptop, while the model actually runs on a V100
 in the cloud. The code is meant to be read in Github, or run locally on your 
 laptop with:
 ```commandline
-python p01_sd_generate.py
+python t1_01_sd_generate.py
 ```
 State: **Working.** \
 Video: (WIP)
@@ -31,7 +35,7 @@ This tutorial shows how you can achieve high performance serving with
 Runhouse by pinning models to GPU memory, down to ~2.5s/image with Stable Diffusion 2 
 (without compilation!). It's meant to be read in Github, or run locally on your laptop with:
 ```commandline
-python p06_object_pinning.py
+python t1_01a_object_pinning.py
 ```
 Status: **Working.** \
 Video: WIP
@@ -45,15 +49,15 @@ This tutorial is meant to be [run from Colab.](https://colab.research.google.com
 Status: **Working.**
 Video: (WIP)
 
-## 03 [Running Karlo (DALL-E) on an A10G/A100](t1_03_dalle_generate.py)
+## 03 [Running Karlo (DALL-E) on an A10G/A100](./t1_03_dalle_generate.py)
 
 Video: WIP \
 Status: **Working.**
 
-## 04 [Experimenting with DALL-E->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/t1_04_Colab_Dalle_Mini_to_Stable_Diffusion.ipynb)
+## 04 [Experimenting with DALL-E->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/t1_04_Colab_Dalle_to_SD_img2img.ipynb)
 
 Video: WIP \
-Status: Working, but stale (may require some fiddling).
+Status: **Working.**
 
 ## 05 [Trying Stable Diffusion Img2Img](t1_05_sd_img2img.py)
 

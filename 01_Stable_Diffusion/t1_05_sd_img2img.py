@@ -7,8 +7,8 @@ import torch
 def sd_img2img_generate(prompt, base_images, num_images=1,
                         steps=50, strength=0.75, guidance_scale=7.5,
                         model_id="stabilityai/stable-diffusion-2-base"):
-    # Here we're using Runhouse's object pinning to hold the model in GPU memory. See p06 for more details.
-    # We're changing the name of the pinned model to avoid a collision if reusing the cluster from p06.
+    # Here we're using Runhouse's object pinning to hold the model in GPU memory. See p01a for more details.
+    # We're changing the name of the pinned model to avoid a collision if reusing the cluster from p01a.
     pipe = rh.get_pinned_object(model_id + 'im2img')
     if pipe is None:
         torch.backends.cuda.matmul.allow_tf32 = True
@@ -30,7 +30,7 @@ if __name__ == "__main__":
                                       name='sd_img2img_generate')
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'
-    rh_base_image = Image.open('rh_logo.png').convert("RGB").resize((512, 512))
+    rh_base_image = Image.open('rh_logo.png').convert("RGB")
     rh_logo_sd_images = sd_img2img_generate_gpu(rh_prompt, [rh_base_image],
                                                 strength=.75, guidance_scale=7.5,
                                                 num_images=4, steps=50)

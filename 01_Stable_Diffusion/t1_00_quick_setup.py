@@ -12,7 +12,7 @@ import runhouse as rh
 # Run this code wherever your cloud credentials are already saved, such as your laptop.
 # Follow the prompts to log in. If this is your first time logging in, you should probably upload your secrets,
 # but none of the other prompts will have any effect.
-rh.login(upload_secrets=True)
+rh.login(upload_secrets=True, interactive=True)
 
 # You can do this interactively by running the following in your command line:
 # `runhouse login`
