@@ -69,7 +69,12 @@ Status: **Working.**
 Video: WIP \
 Status: **Working.**
 
-## 07 Sharing your service with friends
+## 07 [A personal text generation service with Flan-T5-XL](./t1_07_flan_t5_xl_generate.py)
+
+Video: WIP \
+Status: **Working.**
+
+## 08 Sharing your service with friends
 
 Video: WIP \
 Status: WIP

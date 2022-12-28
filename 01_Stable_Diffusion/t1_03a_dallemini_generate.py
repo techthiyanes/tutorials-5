@@ -25,8 +25,9 @@ if __name__ == "__main__":
     generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu,
                               reqs=['./', 'min-dalle'])
 
-    # We need to install PyTorch for CUDA 11.6 on A10G or A100, you can comment this out after the first run.
-    gpu.run(['pip3 install torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116'])
+    # We need to install PyTorch for CUDA 11.6 on A10G or A100. The following line will only run once.
+    generate_dm_gpu.run_setup(['pip3 install torch --upgrade '
+                               '--extra-index-url https://download.pytorch.org/whl/cu116'])
     # If you're running into CUDA errors and just installed the torch version above, you may need to
     # restart the gRPC server to freshly import the package.
     # gpu.restart_grpc_server(resync_rh=True)
