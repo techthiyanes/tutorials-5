@@ -43,6 +43,8 @@ if __name__ == "__main__":
     my_prompt = 'A digital illustration of a woman running on the roof of a house.'
     images = generate_gpu(my_prompt, num_images=2, steps=50)
     [image.show() for image in images]
+    # You can find other kwargs into the model here:
+    # https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion#diffusers.StableDiffusionPipeline.__call__
 
     # We can reuse generate_gpu as much as we please, and after the first execution it will run much faster
     # (~8 seconds / image) because the model is already on the cluster (unless we change the model_id argument).

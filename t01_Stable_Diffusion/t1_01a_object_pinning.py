@@ -1,13 +1,14 @@
 import runhouse as rh
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, DDIMScheduler
 import torch
 import ray
 
 def sd_generate_with_simple_pinning(prompt, num_images=1, steps=100,
-                                    guidance_scale=7.5, model_id='stabilityai/stable-diffusion-2-base'):
+                                    guidance_scale=7.5, model_id='stabilityai/stable-diffusion-2-base',
+                                    dtype=torch.float16, revision="fp16"):
     pipe = rh.get_pinned_object(model_id)
     if pipe is None:
-        pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, revision="fp16").to("cuda")
+        pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype, revision=revision).to("cuda")
         rh.pin_to_memory(model_id, pipe)
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 
