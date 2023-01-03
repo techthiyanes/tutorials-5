@@ -1,4 +1,15 @@
-# 🏃‍♀️Runhouse🏠 Tutorials (WIP)
+<h1 align="center">🏃‍♀️Runhouse 🏠 Tutorials (WIP)</h1>
+<p align="center">
+  <a href="https://runhouse-docs.readthedocs-hosted.com/en/latest/"> 
+    <img alt="Documentation" src="https://readthedocs.com/projects/runhouse-docs/badge/?version=latest">
+  </a>
+ 
+  <a href="https://join.slack.com/t/runhouse/shared_invite/zt-1j7pwsok1-vQy0Gesh55A2fPyyEVq8nQ"> 
+    <img alt="Join Slack" src="https://img.shields.io/badge/Runhouse-Join%20Slack-fedcba?logo=slack">
+  </a>
+</p>
+
+
 
 tldr; If PyTorch lets you send any Python code or data `.to(device)`, 
 why can't you do `my_fn.to('a_gcp_a100')` or `my_table.to('parquet_in_s3')`? 
