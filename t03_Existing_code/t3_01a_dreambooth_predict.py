@@ -32,7 +32,7 @@ if __name__ == "__main__":
     a100 = rh.cluster(name='rh-a100')
     # a100.flush_pins()
     generate_dreambooth = rh.send(fn=sd_generate_pinned, hardware=a100)
-    my_prompt = "sks person riding a rhinoceros, wearing safari attire in the African bush"
+    my_prompt = "sks person riding a rhinoceros, wearing safari attire in the African savanna"
     model_path = 'dreambooth/output'
     images = generate_dreambooth(my_prompt,
                                  model_id=model_path,

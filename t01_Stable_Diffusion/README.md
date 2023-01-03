@@ -40,12 +40,12 @@ python t1_01a_object_pinning.py
 Status: **Working.** \
 Video: WIP
 
-## 02 [Calling your service from anywhere, and some fun with GPT-2](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
+## 02 [Calling your service from anywhere, and some fun with GPT-2](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
 
 We can call the Stable Diffusion function you ran on a V100 above from Colab
 with no setup, installations, or changes. You can access it from anywhere with a python
 interpreter and an internet connection.
-This tutorial is meant to be [run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
+This tutorial is meant to be [run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
 Status: **Working.**
 Video: (WIP)
 
@@ -54,7 +54,7 @@ Video: (WIP)
 Video: WIP \
 Status: **Working.**
 
-## 04 [Experimenting with DALL-E->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/01_Stable_Diffusion/t1_04_Colab_Dalle_to_SD_img2img.ipynb)
+## 04 [Experimenting with DALL-E->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_04_Colab_Dalle_to_SD_img2img.ipynb)
 
 Video: WIP \
 Status: **Working.**
