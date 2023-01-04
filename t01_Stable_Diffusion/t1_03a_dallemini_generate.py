@@ -23,14 +23,8 @@ if __name__ == "__main__":
     # See this helpful guide to cloud GPUs for more details: https://www.paperspace.com/gpu-cloud-comparison
     gpu = rh.cluster(name='rh-a10g', instance_type='A10G:1')
     generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu,
-                              reqs=['./', 'min-dalle'])
-
-    # We need to install PyTorch for CUDA 11.6 on A10G or A100. The following line will only run once.
-    generate_dm_gpu.run_setup(['pip3 install torch --upgrade '
-                               '--extra-index-url https://download.pytorch.org/whl/cu116'])
-    # If you're running into CUDA errors and just installed the torch version above, you may need to
-    # restart the gRPC server to freshly import the package.
-    # gpu.restart_grpc_server(resync_rh=True)
+                              reqs=['./', 'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
+                                    'min-dalle'])
 
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_dm_gpu(my_prompt, num_images_sqrt=1, seed=random.randint(0, 1000))

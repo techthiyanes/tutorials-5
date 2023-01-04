@@ -19,11 +19,10 @@ if __name__ == "__main__":
     # gpu = rh.cluster(name='rh-a10g', instance_type='g5.2xlarge', provider='aws')
     flan_t5_generate = rh.send(fn=causal_lm_generate,
                                hardware=gpu,
-                               reqs=['local:./', 'transformers'],
+                               reqs=['local:./',
+                                     'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
+                                     'transformers'],
                                name='flan_t5_generate')
-    # We need to install PyTorch for CUDA 11.6 on A10G or A100. The following line will only run once.
-    flan_t5_generate.run_setup(['pip3 install torch --upgrade '
-                                  '--extra-index-url https://download.pytorch.org/whl/cu116'])
 
     # The model takes a long time to download and send to GPU the first time you run, but after that it only takes
     # 4 seconds per image.

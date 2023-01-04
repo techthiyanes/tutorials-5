@@ -9,20 +9,17 @@ def train_dreambooth(input_images_dir, class_name='person'):
     training_function_gpu = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,
-        reqs=['transformers', 'accelerate'],
+        reqs=['pip:./diffusers',
+              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
+              'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
+              'transformers', 'accelerate', 'datasets'],
         name='train_dreambooth')
-    training_function_gpu.run_setup(['pip3 install torch torchvision --upgrade '
-                                     '--extra-index-url https://download.pytorch.org/whl/cu116',
-                                     'git clone https://github.com/huggingface/diffusers.git',
-                                     'pip install ./diffusers',
-                                     'mkdir dreambooth',
-                                     ])
+    training_function_gpu.run_setup(['mkdir dreambooth'])
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
 
     remote_image_dir = 'dreambooth/instance_images'
     gpu.rsync(input_images_dir, remote_image_dir, up=True)
-    remote_output_dir = 'dreambooth/output'
 
     create_train_args = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
@@ -32,13 +29,13 @@ def train_dreambooth(input_images_dir, class_name='person'):
                                                '--instance_prompt', f'a photo of sks {class_name}'])
     train_args.train_text_encoder = True
     train_args.class_data_dir = 'dreambooth/class_images'
-    train_args.output_dir = remote_output_dir
+    train_args.output_dir = 'dreambooth/output'
     train_args.mixed_precision = 'bf16'
     train_args.with_prior_preservation = True
     train_args.prior_loss_weight = 1.0
     train_args.class_prompt = f"a photo of {class_name}"
     train_args.resolution = 512
-    train_args.train_batch_size = 2
+    train_args.train_batch_size = 4
     train_args.gradient_checkpointing = True
     train_args.learning_rate = 1e-6
     train_args.lr_scheduler = "constant"
@@ -52,4 +49,5 @@ def train_dreambooth(input_images_dir, class_name='person'):
 
 
 if __name__ == "__main__":
-    train_dreambooth(input_images_dir=str(Path.home() / 'dreambooth/images'), class_name='person')
+    # train_dreambooth(input_images_dir=str(Path.home() / 'dreambooth/images'), class_name='person')
+    train_dreambooth(input_images_dir=str(Path.home() / 'runhouse/Estelle_Dreambooth/images'), class_name='person')

@@ -38,7 +38,7 @@ If you would be so kind, we would love if you could have a notes doc open
 as you install and try Runhouse for the first time. Your first impressions, 
 pain points, and highlights are very valuable to us.
 
-## 🚨 Caution: This is an Unstable Private Preview 🚨
+## 🚨 Caution: This is an Unstable Alpha 🚨
 
 Runhouse is heavily under development and unstable. We are quite 
 a ways away from having our first stable release. We are sharing
