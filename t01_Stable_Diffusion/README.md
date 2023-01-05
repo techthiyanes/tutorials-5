@@ -16,7 +16,7 @@ python t1_00_quick_setup.py
 ```
 Status: **Working.** \
 
-## 01 [A Stable Diffusion service on a cloud V100 in 5 lines of code](./t1_01_sd_generate.py)
+## 01 [Stable Diffusion on a V100 in 5 lines of code](./t1_01_sd_generate.py)
 
 We'll start by using Runhouse to experiment with Stable 
 Diffusion from your laptop, while the model actually runs on a V100
@@ -27,7 +27,7 @@ python t1_01_sd_generate.py
 ```
 Status: **Working.** \
 
-## 01a [Pinning objects to GPU memory to improve performance](./t1_01a_object_pinning.py)
+## 01a [Pinning objects to GPU memory](./t1_01a_object_pinning.py)
 
 This tutorial shows how you can achieve high performance serving with 
 Runhouse by pinning models to GPU memory, down to ~2.5s/image with Stable Diffusion 2 
@@ -53,7 +53,7 @@ Status: **Working.**
 
 Status: **Working.**
 
-## 05 [Trying Stable Diffusion Img2Img](t1_05_sd_img2img.py)
+## 05 [A Stable Diffusion Img2Img Service](t1_05_sd_img2img.py)
 
 Status: **Working.**
 
@@ -61,7 +61,7 @@ Status: **Working.**
 
 Status: **Working.**
 
-## 07 [A personal text generation service with Flan-T5-XL](./t1_07_flan_t5_xl_generate.py)
+## 07 [A text generation service with Flan-T5-XL](./t1_07_flan_t5_xl_generate.py)
 
 Status: **Working.**
 
