@@ -10,7 +10,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,
         reqs=['pip:./diffusers',
-              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
+              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',  # Need CUDA 11.6 for A100
               'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
               'transformers', 'accelerate', 'datasets'],
         name='train_dreambooth')

@@ -1,4 +1,4 @@
-<h1 align="center">🏃‍♀️Runhouse 🏠 Tutorials (WIP)</h1>
+<h1 align="center">🏃‍♀️Runhouse 🏠 Tutorials</h1>
 <p align="center">
   <a href="https://runhouse-docs.readthedocs-hosted.com/en/latest/"> 
     <img alt="Documentation" src="https://readthedocs.com/projects/runhouse-docs/badge/?version=latest">
@@ -11,7 +11,7 @@
 
 
 
-tldr; If PyTorch lets you send any Python code or data `.to(device)`, 
+**tldr;** If PyTorch lets you send any Python code or data `.to(device)`, 
 why can't you do `my_fn.to('a_gcp_a100')` or `my_table.to('parquet_in_s3')`? 
 Runhouse allows just that: send code and data to any of your compute or 
 data infra, all in Python, and continue to use them eagerly exactly as they were. 
@@ -29,10 +29,10 @@ the tools and usage patterns of Runhouse. We've devised them
 to chart a fun path through our features, but you're 
 welcome to hop around if you prefer.
 
-1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and DALL-E](t01_Stable_Diffusion/README.md)
-1. [A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT on Multiple GPUs and Deploying](t02_BERT_fine_tuning/README.md) (WIP)
-1. [Fancy Runhouse 🧑‍🎨 - Dreambooth or TIMM in <10 Minutes](t03_Existing_code/README.md) (WIP)
-1. [Online Runhouse 👩‍💻 - DLRM Online Training and Deployment](t04_Online_learning/README.md) (~Q1)
+1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and DALL-E](t01_Stable_Diffusion/)
+1. [A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT and Deploying](t02_BERT_fine_tuning/)
+1. [Fancy Runhouse 🧑‍🎨 - Dreambooth or TIMM in <10 Minutes](t03_Existing_code/)
+1. [Online Runhouse 👩‍💻 - DLRM Online Training and Deployment](t04_Online_learning/) (~Q1)
 
 If you would be so kind, we would love if you could have a notes doc open
 as you install and try Runhouse for the first time. Your first impressions, 

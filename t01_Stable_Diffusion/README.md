@@ -14,8 +14,7 @@ The code is meant to be read in Github, or run locally on your laptop with:
 ```commandline
 python t1_00_quick_setup.py
 ```
-State: **Working.** \
-Video: [Link](https://www.loom.com/share/24238a5296264bdebe095f1189b51acf)
+Status: **Working.** \
 
 ## 01 [A Stable Diffusion service on a cloud V100 in 5 lines of code](./t1_01_sd_generate.py)
 
@@ -26,8 +25,7 @@ laptop with:
 ```commandline
 python t1_01_sd_generate.py
 ```
-State: **Working.** \
-Video: (WIP)
+Status: **Working.** \
 
 ## 01a [Pinning objects to GPU memory to improve performance](./t1_01a_object_pinning.py)
 
@@ -38,7 +36,6 @@ Runhouse by pinning models to GPU memory, down to ~2.5s/image with Stable Diffus
 python t1_01a_object_pinning.py
 ```
 Status: **Working.** \
-Video: WIP
 
 ## 02 [Calling your service from anywhere, and some fun with GPT-2](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
 
@@ -47,36 +44,29 @@ with no setup, installations, or changes. You can access it from anywhere with a
 interpreter and an internet connection.
 This tutorial is meant to be [run from Colab.](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_02_Colab_Stable_Diffusion.ipynb)
 Status: **Working.**
-Video: (WIP)
 
 ## 03 [Running Karlo (DALL-E) on an A10G/A100](./t1_03_dalle_generate.py)
 
-Video: WIP \
 Status: **Working.**
 
 ## 04 [Experimenting with DALL-E->SD-Image-to-Image in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/t1_04_Colab_Dalle_to_SD_img2img.ipynb)
 
-Video: WIP \
 Status: **Working.**
 
 ## 05 [Trying Stable Diffusion Img2Img](t1_05_sd_img2img.py)
 
-Video: WIP \
 Status: **Working.**
 
 ## 06 [Deploying DALLE->SD as a multi-hop service (and multi-cloud!)](t1_06_dalle_sd_pipeline.py)
 
-Video: WIP \
 Status: **Working.**
 
 ## 07 [A personal text generation service with Flan-T5-XL](./t1_07_flan_t5_xl_generate.py)
 
-Video: WIP \
 Status: **Working.**
 
 ## 08 Sharing your service with friends
 
-Video: WIP \
 Status: WIP
 
 # Appendices

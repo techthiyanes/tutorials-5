@@ -16,24 +16,24 @@ tutorial](https://huggingface.co/docs/transformers/training).
 
 ## 01 Distributing preprocessing across many CPUs with Hugging Face 🤗 Datasets
 
-Video (WIP)
+Status: WIP
 
 ## 02 Scaling BERT Fine-tuning with Hugging Face 🤗 Accelerate
 
-Video (WIP)
+Status: WIP
 
 ## 03 Evaluating the model before deploying for inference
 
-Video (WIP)
+Status: WIP
 
 ## 04 A simple inference service with zero-downtime deployment
 
-Video (WIP)
+Status: WIP
 
 ## 05 Pipelining: A service taking dataset to deployment
 
-Video (WIP)
+Status: WIP
 
 ## 06 The P2R Path: Iterating on a production pipeline in Colab
 
-Video (WIP)
+Status: WIP

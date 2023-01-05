@@ -7,18 +7,17 @@ structure, whatever execution environment (notebook,
 orchestrator, data app, CI/CD), you should be able to do something fun
 and interesting with Runhouse in minutes, not months.
 
-## 01 Running the Hugging Face 🤗 Dreambooth Space onto your own GPU
+## 01 Running Dreambooth Space onto your own GPU
 
-Video (WIP)
+Status: 
+* Training: **Working.**
+* Inference: **Working.**
+* Gradio: WIP
 
 ## 02 Training a ResNet with out-of-the-box TIMM on your own GPU
 
-Video (WIP)
+Status: WIP
 
-## Running a Hugging Face 🤗 Example Script
+## 03 Fine-tuning BERT from a Hugging Face 🤗 Example
 
-Video (WIP)
-
-## 04 Dreambooth Training and Inference Services 
-
-Video (WIP)
+Status: **Working.**
