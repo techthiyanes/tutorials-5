@@ -18,7 +18,8 @@ def tokenize_dataset(hf_dataset):
                                   input_columns=['text'],
                                   batched=True,
                                   num_proc=os.cpu_count())
-    return rh.table(data=preprocessed)
+    return rh.table(data=preprocessed,
+                    name='preprocessed-tokenized-dataset')
 
 
 if __name__ == "__main__":
@@ -34,8 +35,12 @@ if __name__ == "__main__":
                                   hardware=preproc.hardware,
                                   dryrun=True)
 
-    yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:10%]')
+    yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
     # from_cluster converts the table's file references to sftp file references without copying it
     preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.hardware)
-    print(preprocessed_yelp['train'][0:10])
+
+    batches = preprocessed_yelp.stream(batch_size=10000)
+    for idx, batch in enumerate(batches):
+        print(batch)
+
     preprocessed_yelp.save(name="yelp_bert_preprocessed", save_to=['rns', 'local'])
