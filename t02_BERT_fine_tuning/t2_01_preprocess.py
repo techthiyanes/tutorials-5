@@ -39,8 +39,13 @@ if __name__ == "__main__":
     # from_cluster converts the table's file references to sftp file references without copying it
     preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.hardware)
 
-    batches = preprocessed_yelp.stream(batch_size=10000)
+    # Stream in the table as a pyarrow table, and convert each batch to a Huggingface dataset
+    batches = preprocessed_yelp.stream(batch_size=1000)
     for idx, batch in enumerate(batches):
-        print(batch)
+        # convert each batch into a huggingface dataset
+        batch_dataset = preprocessed_yelp.to_dataset(batch)
+        print(batch_dataset)
+        break
 
-    preprocessed_yelp.save(name="yelp_bert_preprocessed", save_to=['rns', 'local'])
+    preprocessed_yelp.save(name="yelp_bert_preprocessed",
+                           save_to=['rns', 'local'])

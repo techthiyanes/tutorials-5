@@ -41,13 +41,22 @@ def get_model_and_optimizer(num_labels, lr, model_id='bert-base-cased'):
 
 if __name__ == "__main__":
     rh.set_folder('~/bert/sentiment_analysis', create=True)
-    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
     bert_model, adam_optimizer = get_model_and_optimizer(model_id='bert-base-cased', num_labels=5, lr=5e-5)
 
-    gpus = rh.cluster(name='4-v100s', instance_type='V100:4', provider='cheapest', use_spot=False)
-    ft_model = rh.send(fn=fine_tune_model, hardware=gpus, name='finetune_ddp_4gpu')
+    gpus = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
+    # gpus.restart_grpc_server(resync_rh=True)
+
+    ft_model = rh.send(fn=fine_tune_model,
+                       hardware=gpus,
+                       name='finetune_ddp_1gpu',
+                       reqs=['torch==1.12.0'],
+                       )
+
+    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
+
     trained_model = ft_model(preprocessed_table,
                              bert_model,
                              adam_optimizer,
-                             epochs=3).from_cluster(gpus)
+                             num_epochs=3).from_cluster(gpus)
+
     trained_model.save(name='yelp_fine_tuned_bert', save_to=['rns', 'local'])
