@@ -11,7 +11,7 @@
 
 
 
-**tldr;** If PyTorch lets you send any Python code or data `.to(device)`, 
+**tldr;** PyTorch lets you send any Python code or data `.to(device)`, so 
 why can't you do `my_fn.to('a_gcp_a100')` or `my_table.to('parquet_in_s3')`? 
 Runhouse allows just that: send code and data to any of your compute or 
 data infra, all in Python, and continue to use them eagerly exactly as they were. 
@@ -20,9 +20,9 @@ it lets you run Stable Diffusion inferences on your own cloud GPU in minutes,
 but there's no magic yaml, DSL, or "submitting for execution." 
 And because it's not stateless, we can pin the model to GPU memory 
 ([tutorial 1-01a](t01_Stable_Diffusion/t1_01a_object_pinning.py)), and get ~2.5s/image 
-inference time before any compilation. There's much more, like making these resources 
-available from anywhere with a Python interpreter and an internet connection, or sharing 
-them with collaborators, so let's jump in.
+inference time before any compilation. There's much more, like being able to access your 
+code, compute, and data from anywhere with a Python interpreter and an internet connection, 
+or sharing them with collaborators, so let's jump in.
 
 These tutorials introduce you to 
 the tools and usage patterns of Runhouse. We've devised them
@@ -37,6 +37,14 @@ welcome to hop around if you prefer.
 If you would be so kind, we would love if you could have a notes doc open
 as you install and try Runhouse for the first time. Your first impressions, 
 pain points, and highlights are very valuable to us.
+
+### ⏰ If you only have 10 minutes:
+* See our dreambooth tutorials ([training](https://github.com/run-house/tutorials/blob/main/t03_Existing_code/t3_01_dreambooth_train.py), 
+[inference](https://github.com/run-house/tutorials/blob/main/t03_Existing_code/t3_01a_dreambooth_predict.py)), 
+we think it's the easiest way anywhere to run dreambooth on your own cloud GPU 
+(for managed dreambooth, check out [Modal Labs's dreambooth](https://modal.com/docs/guide/ex/dreambooth_app) or 
+[StableBoost](http://stableboost.ai/)).
+* See our BERT fine-tuning pipeline example, [here](./t02_BERT_fine_tuning).
 
 ## 🚨 Caution: This is an Unstable Alpha 🚨
 

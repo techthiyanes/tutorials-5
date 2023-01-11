@@ -41,7 +41,7 @@ rh.configs.set('load_from', ['rns', 'local'])
 # 10 minutes of inactivity. If you set autostop = -1, the cluster will stay up indefinitely. After the cluster
 # terminates, if you call a Send which is on that cluster, the Send will automatically start the cluster again.
 # You can also call `cluster.keep_warm(autostop=-1) to control this for an existing cluster.
-rh.configs.set('default_autostop', -1)
+rh.configs.set('default_autostop', 30)
 
 # You can set your default Cloud provider if you have multiple Cloud accounts set up locally. If you set it
 # to 'cheapest', SkyPilot will select the cheapest provider for your desired hardware (including spot pricing,

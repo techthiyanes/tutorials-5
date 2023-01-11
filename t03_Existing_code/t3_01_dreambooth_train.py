@@ -49,5 +49,5 @@ def train_dreambooth(input_images_dir, class_name='person'):
 
 
 if __name__ == "__main__":
-    # train_dreambooth(input_images_dir=str(Path.home() / 'dreambooth/images'), class_name='person')
-    train_dreambooth(input_images_dir=str(Path.home() / 'runhouse/Estelle_Dreambooth/images'), class_name='person')
+    # Need about 20 photos of the subject, and the closer they can be to 512x512 the better
+    train_dreambooth(input_images_dir=str(Path.home() / 'dreambooth/images'), class_name='person')
