@@ -7,10 +7,9 @@ import runhouse as rh
 from tqdm.auto import tqdm  # progress bar
 
 
-def fine_tune_model(preprocessed_data, model, optimizer, num_epochs=3, batch_size=8):
+def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_size=8):
     accelerator = Accelerator()
-
-    train_dataloader = DataLoader(preprocessed_data['train'], shuffle=True, batch_size=batch_size)
+    train_dataloader = DataLoader(preprocessed_table, batch_size=batch_size)
     train_dataloader, model, optimizer = accelerator.prepare(train_dataloader, model, optimizer)
 
     num_training_steps = num_epochs * len(train_dataloader)
@@ -40,7 +39,8 @@ def get_model_and_optimizer(num_labels, lr, model_id='bert-base-cased'):
 
 
 if __name__ == "__main__":
-    rh.set_folder('~/bert/sentiment_analysis', create=True)
+    # rh.set_folder('~/bert/sentiment_analysis', create=True)
+
     bert_model, adam_optimizer = get_model_and_optimizer(model_id='bert-base-cased', num_labels=5, lr=5e-5)
 
     gpus = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
                        reqs=['torch==1.12.0'],
                        )
 
-    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
+    preprocessed_table = rh.table(name="yelp_bert_preprocessed", save_to=[])
 
     trained_model = ft_model(preprocessed_table,
                              bert_model,

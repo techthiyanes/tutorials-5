@@ -24,12 +24,15 @@ def tokenize_dataset(hf_dataset):
 
 if __name__ == "__main__":
     rh.set_folder('~/bert', create=True)
+
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
                       name="BERT_preproc_32cpu",
                       save_to=['local'])
 
-    rh.set_folder('./sentiment_analysis', create=True)
+    # TODO [DG] this folder is not setting properly
+    # rh.set_folder('./sentiment_analysis', create=True)
+
     # Not being saved, just a helper here
     remote_load_dataset = rh.send(fn=load_dataset,
                                   hardware=preproc.hardware,
@@ -39,13 +42,13 @@ if __name__ == "__main__":
     # from_cluster converts the table's file references to sftp file references without copying it
     preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.hardware)
 
-    # Stream in the table as a pyarrow table, and convert each batch to a Huggingface dataset
-    batches = preprocessed_yelp.stream(batch_size=1000)
+    batches = preprocessed_yelp.stream(batch_size=100)
     for idx, batch in enumerate(batches):
         # convert each batch into a huggingface dataset
         batch_dataset = preprocessed_yelp.to_dataset(batch)
-        print(batch_dataset)
+        print(f"Preprocessed batch:\n {batch_dataset}")
         break
 
     preprocessed_yelp.save(name="yelp_bert_preprocessed",
-                           save_to=['rns', 'local'])
+                           save_to=['rns', 'local'],
+                           overwrite=True)
