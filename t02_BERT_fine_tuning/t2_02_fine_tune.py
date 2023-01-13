@@ -41,8 +41,6 @@ def get_model_and_optimizer(num_labels, lr, model_id='bert-base-cased'):
 if __name__ == "__main__":
     # rh.set_folder('~/bert/sentiment_analysis', create=True)
 
-    bert_model, adam_optimizer = get_model_and_optimizer(model_id='bert-base-cased', num_labels=5, lr=5e-5)
-
     gpus = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
     # gpus.restart_grpc_server(resync_rh=True)
 
@@ -50,7 +48,16 @@ if __name__ == "__main__":
                        hardware=gpus,
                        name='finetune_ddp_1gpu',
                        reqs=['torch==1.12.0'],
+                       load_secrets=True,
                        )
+    # The load_secrets argument above will load the secrets onto the cluster from your Runhouse account (api.run.house),
+    # and will only work if you've already uploaded secrets to runhouse (e.g. during `runhouse login`).
+    # If you'd like to run this tutorial without an account or saved secrets, you can uncomment this line:
+    # ft_model.send_secrets(secrets=['sky'])
+
+    get_model_and_optimizer_on_cluster = rh.send(fn=get_model_and_optimizer, hardware=gpus, dryrun=True)
+    bert_model, adam_optimizer = get_model_and_optimizer_on_cluster.remote(model_id='bert-base-cased',
+                                                                           num_labels=5, lr=5e-5)
 
     preprocessed_table = rh.table(name="yelp_bert_preprocessed", save_to=[])
 

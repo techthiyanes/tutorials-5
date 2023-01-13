@@ -26,17 +26,6 @@ rh.login(upload_secrets=True, interactive=True)
 # cloud providers to use spot instances. You can override this setting in the cluster factory constructor.
 rh.configs.set('use_spot', False)
 
-# Where to save and load named resources by default. "RNS" is Runhouse's DNS-like Resource Naming System, and using it
-# allows you to access your resources from any environment and share them with others. If you choose to store your
-# resources locally, they'll be saved to the "rh/" directory inside your git root directory, which makes them accessible
-# from the current environment and to your collaborators using the same git repo (once they pull down your changes).
-# You can override this on a per-resource basis via the `save_to` and `load_from` arguments to resource constructors.
-# Note that you much create a Runhouse account and log in before you can use RNS.
-rh.configs.set('save_to', ['rns', 'local'])
-rh.configs.set('load_from', ['rns', 'local'])
-
-# You can view the resources you've stored in RNS in the Runhouse UI: https://api.run.house/dashboard/?option=created
-
 # Clusters can start and stop dynamically to save money. If you set autostop = 10, the cluster will terminate after
 # 10 minutes of inactivity. If you set autostop = -1, the cluster will stay up indefinitely. After the cluster
 # terminates, if you call a Send which is on that cluster, the Send will automatically start the cluster again.
