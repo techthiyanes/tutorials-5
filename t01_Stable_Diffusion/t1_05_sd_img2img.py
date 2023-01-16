@@ -26,7 +26,7 @@ def sd_img2img_generate(prompt, base_images, num_images=1,
 if __name__ == "__main__":
     v100_gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
     sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=v100_gpu,
-                                      reqs=['local:./', 'diffusers'],
+                                      reqs=['./', 'torch==1.12.0', 'diffusers'],
                                       name='sd_img2img_generate')
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'

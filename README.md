@@ -97,7 +97,7 @@ tldr; See this video (WIP) about what features creating an account enables.
 
 Using Runhouse with only the OSS Python package is perfectly fine, and it
 will use your cloud credentials saved into locations like `~/.aws/credentials`
-or `~/.gcp/credentials` by default. Right now we support AWS, GCP, Azure, and
+or `~/.config/gcloud` by default. Right now we support AWS, GCP, Azure, and
 Hugging Face credentials. However, you can unlock some very unique portability 
 features by creating an account on [api.run.house](https://api.run.house) and 
 saving your secrets, configs, and resources there. Think of the OSS-only 

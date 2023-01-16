@@ -27,7 +27,7 @@ def sd_upscaler_generate(prompt, base_images, num_images=1,
     return ret
 
 if __name__ == "__main__":
-    dalle_generate = rh.send(name='karlo_generate', load_from=['rns'])
+    dalle_generate = rh.send(name='karlo_generate')
     my_prompt = 'Shrek giving a TED talk to an audience of Minions.'
     base_images = dalle_generate(my_prompt)
     base_images[0].show()

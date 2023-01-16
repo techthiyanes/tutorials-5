@@ -59,11 +59,11 @@ if __name__ == "__main__":
     bert_model, adam_optimizer = get_model_and_optimizer_on_cluster.remote(model_id='bert-base-cased',
                                                                            num_labels=5, lr=5e-5)
 
-    preprocessed_table = rh.table(name="yelp_bert_preprocessed", save_to=[])
+    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
 
     trained_model = ft_model(preprocessed_table,
                              bert_model,
                              adam_optimizer,
                              num_epochs=3).from_cluster(gpus)
 
-    trained_model.save(name='yelp_fine_tuned_bert', save_to=['rns', 'local'])
+    trained_model.save(name='yelp_fine_tuned_bert')

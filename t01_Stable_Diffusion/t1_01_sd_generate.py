@@ -14,9 +14,7 @@ if __name__ == "__main__":
     # which cloud providers you're set up to use. You can set a specific provider by passing `provider='gcp'`,
     # or a specific instance type like `instance_type='p3.2xlarge'`.
     gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
-    generate_gpu = rh.send(fn=sd_generate, hardware=gpu,
-                           reqs=['./', 'torch==1.12.0', 'diffusers'],
-                           name='sd_generate', save_to=['rns'])
+    generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./', 'torch==1.12.0', 'diffusers'])
 
     # generate_gpu is a Python callable just like our original function. We can call it and get back results just
     # like we would locally, as long as the inputs and outputs are serializable with cloudpickle and <2GB (a soft
@@ -27,9 +25,17 @@ if __name__ == "__main__":
     # You can find other kwargs into the model here:
     # https://huggingface.co/docs/diffusers/api/pipelines/stable_diffusion#diffusers.StableDiffusionPipeline.__call__
 
+    # In the next step of this tutorial we'll run this generate service from a Google Colab,
+    # and we need to save it to runhouse to do so. You can skip that step if you prefer.
+    generate_gpu.save(name='sd_generate')
+
+    # Cluster auto-termination is enabled by default (after 30 minutes of inactivity), but you can also
+    # terminate in your cloud provider's UI, or through Runhouse as follows:
+    # gpu.teardown()
+
     # We can reuse generate_gpu as much as we please, and after the first execution it will run much faster
     # (~8 seconds / image) because the model is already on the cluster (unless we change the model_id argument).
-    # In tutorial p06 you'll see how you can get this down to ~2.5 seconds per image.
+    # In tutorial t1-1a you'll see how you can get this down to ~2.5 seconds per image.
 
     # Some other neat things we can do with the "Send" (serverless endpoint):
 

@@ -11,7 +11,7 @@ def tokenize_function(examples):
 
 
 def tokenize_dataset(hf_dataset):
-    if isinstance(hf_dataset, str) and rh.exists(hf_dataset, load_from=['rns', 'local']):
+    if isinstance(hf_dataset, str) and rh.exists(hf_dataset):
         hf_dataset = rh.table(name=hf_dataset).convert_to('hf_dataset')
 
     preprocessed = hf_dataset.map(tokenize_function,
@@ -27,8 +27,7 @@ if __name__ == "__main__":
 
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
-                      name="BERT_preproc_32cpu",
-                      save_to=['local'])
+                      name="BERT_preproc_32cpu")
 
     # TODO [DG] this folder is not setting properly
     # rh.set_folder('./sentiment_analysis', create=True)
@@ -49,6 +48,4 @@ if __name__ == "__main__":
         print(f"Preprocessed batch:\n {batch_dataset}")
         break
 
-    preprocessed_yelp.save(name="yelp_bert_preprocessed",
-                           save_to=['rns', 'local'],
-                           overwrite=True)
+    preprocessed_yelp.save(name="yelp_bert_preprocessed", overwrite=True)

@@ -23,8 +23,7 @@ if __name__ == "__main__":
     predict_fn = create_prediction_service('yelp_fine_tuned_bert')
     bert_sa_service = rh.send(fn=predict_fn,
                               hardware="^rh-1-cpu",
-                              name="prediction_service",
-                              save_to=['rns', 'local'])
+                              name="prediction_service")
     new_examples = [
         'This place is sick!',
         'The service left much to be desired.',

@@ -28,7 +28,7 @@ def evaluate_model(preprocessed_data, model):
 if __name__ == "__main__":
     rh.set_folder('~/bert/sentiment_analysis', create=True)
     preprocessed_table = rh.table(name="yelp_bert_preprocessed")
-    trained_model = pickle.loads(rh.blob(name='yelp_fine_tuned_bert', load_from=['rns', 'local']).data)
+    trained_model = pickle.loads(rh.blob(name='yelp_fine_tuned_bert').data)
 
     model_eval = rh.send(fn=evaluate_model,
                          hardware='4-v100s',
