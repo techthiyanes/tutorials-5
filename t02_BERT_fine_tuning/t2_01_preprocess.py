@@ -18,16 +18,16 @@ def tokenize_dataset(hf_dataset):
                                   input_columns=['text'],
                                   batched=True,
                                   num_proc=os.cpu_count())
-    return rh.table(data=preprocessed,
-                    name='preprocessed-tokenized-dataset')
+    return rh.table(data=preprocessed).save()
 
 
 if __name__ == "__main__":
-    rh.set_folder('~/bert', create=True)
+    # rh.set_folder('~/bert', create=True)
 
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
                       name="BERT_preproc_32cpu")
+    preproc.hardware.restart_grpc_server()
 
     # TODO [DG] this folder is not setting properly
     # rh.set_folder('./sentiment_analysis', create=True)
@@ -48,4 +48,4 @@ if __name__ == "__main__":
         print(f"Preprocessed batch:\n {batch_dataset}")
         break
 
-    preprocessed_yelp.save(name="yelp_bert_preprocessed", overwrite=True)
+    preprocessed_yelp.save(name="preprocessed-tokenized-dataset")

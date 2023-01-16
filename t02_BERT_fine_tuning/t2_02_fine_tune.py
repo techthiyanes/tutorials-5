@@ -1,5 +1,6 @@
 from transformers import AutoModelForSequenceClassification, get_scheduler
 from accelerate import Accelerator
+import ray
 import ray.cloudpickle as pickle
 import torch
 from torch.utils.data import DataLoader
@@ -53,11 +54,12 @@ if __name__ == "__main__":
     # The load_secrets argument above will load the secrets onto the cluster from your Runhouse account (api.run.house),
     # and will only work if you've already uploaded secrets to runhouse (e.g. during `runhouse login`).
     # If you'd like to run this tutorial without an account or saved secrets, you can uncomment this line:
-    # ft_model.send_secrets(secrets=['sky'])
+    # ft_model.send_secrets(providers=['sky'])
 
-    get_model_and_optimizer_on_cluster = rh.send(fn=get_model_and_optimizer, hardware=gpus, dryrun=True)
-    bert_model, adam_optimizer = get_model_and_optimizer_on_cluster.remote(model_id='bert-base-cased',
-                                                                           num_labels=5, lr=5e-5)
+    # The model and optimizer are sent to the cluster to be initialized - receive an object ref in return
+    model_and_optimizer = rh.send(fn=get_model_and_optimizer, hardware=gpus, dryrun=True)
+    ref = model_and_optimizer.remote(model_id='bert-base-cased', num_labels=5, lr=5e-5)
+    bert_model, adam_optimizer = ray.get(ref)
 
     preprocessed_table = rh.table(name="yelp_bert_preprocessed")
 
