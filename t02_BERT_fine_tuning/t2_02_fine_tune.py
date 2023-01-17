@@ -1,6 +1,5 @@
 from transformers import AutoModelForSequenceClassification, get_scheduler
 from accelerate import Accelerator
-import ray
 import ray.cloudpickle as pickle
 import torch
 from torch.utils.data import DataLoader
@@ -9,6 +8,7 @@ from tqdm.auto import tqdm  # progress bar
 
 
 def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_size=8):
+    # https://huggingface.co/docs/transformers/accelerate
     accelerator = Accelerator()
     train_dataloader = DataLoader(preprocessed_table, batch_size=batch_size)
     train_dataloader, model, optimizer = accelerator.prepare(train_dataloader, model, optimizer)
@@ -16,9 +16,11 @@ def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_si
     num_training_steps = num_epochs * len(train_dataloader)
     lr_scheduler = get_scheduler(
         name="linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
+
     progress_bar = tqdm(range(num_training_steps))
 
     model.train()
+
     for epoch in range(num_epochs):
         for batch in train_dataloader:
             outputs = model(**batch)
@@ -33,35 +35,41 @@ def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_si
     return rh.blob(data=pickle.dumps(model))
 
 
-def get_model_and_optimizer(num_labels, lr, model_id='bert-base-cased'):
+def get_model(num_labels, model_id='bert-base-cased'):
     model = AutoModelForSequenceClassification.from_pretrained(model_id, num_labels=num_labels)
+    return model
+
+
+def get_optimizer(model, lr):
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
-    return model, optimizer
+    return optimizer
 
 
 if __name__ == "__main__":
     # rh.set_folder('~/bert/sentiment_analysis', create=True)
-
-    gpus = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
-    # gpus.restart_grpc_server(resync_rh=True)
+    gpus = rh.cluster(name='v100', instance_type='V100:1', provider='aws', use_spot=False)
+    # gpus.restart_grpc_server()
 
     ft_model = rh.send(fn=fine_tune_model,
                        hardware=gpus,
                        name='finetune_ddp_1gpu',
                        reqs=['torch==1.12.0'],
-                       load_secrets=True,
-                       )
+                       load_secrets=True).save()
+
     # The load_secrets argument above will load the secrets onto the cluster from your Runhouse account (api.run.house),
     # and will only work if you've already uploaded secrets to runhouse (e.g. during `runhouse login`).
+
     # If you'd like to run this tutorial without an account or saved secrets, you can uncomment this line:
     # ft_model.send_secrets(providers=['sky'])
 
     # The model and optimizer are sent to the cluster to be initialized - receive an object ref in return
-    model_and_optimizer = rh.send(fn=get_model_and_optimizer, hardware=gpus, dryrun=True)
-    ref = model_and_optimizer.remote(model_id='bert-base-cased', num_labels=5, lr=5e-5)
-    bert_model, adam_optimizer = ray.get(ref)
+    model_on_gpu = rh.send(fn=get_model, hardware=gpus, dryrun=True)
+    optimizer_on_gpu = rh.send(fn=get_optimizer, hardware=gpus, dryrun=True)
 
-    preprocessed_table = rh.table(name="yelp_bert_preprocessed")
+    bert_model = model_on_gpu.remote(num_labels=5, model_id='bert-base-cased')
+    adam_optimizer = optimizer_on_gpu.remote(model=bert_model, lr=5e-5)
+
+    preprocessed_table = rh.table(name="preprocessed-tokenized-dataset")
 
     trained_model = ft_model(preprocessed_table,
                              bert_model,

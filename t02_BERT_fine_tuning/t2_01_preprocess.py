@@ -7,18 +7,29 @@ tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
 
 def tokenize_function(examples):
-    return tokenizer(examples, padding="max_length", truncation=True)
+    return tokenizer(examples["text"], padding="max_length", truncation=True)
 
 
 def tokenize_dataset(hf_dataset):
     if isinstance(hf_dataset, str) and rh.exists(hf_dataset):
         hf_dataset = rh.table(name=hf_dataset).convert_to('hf_dataset')
 
-    preprocessed = hf_dataset.map(tokenize_function,
-                                  input_columns=['text'],
-                                  batched=True,
-                                  num_proc=os.cpu_count())
-    return rh.table(data=preprocessed).save()
+    tokenized_datasets = hf_dataset.map(tokenize_function,
+                                        # input_columns=['text'],
+                                        # num_proc=os.cpu_count(),
+                                        batched=True)
+
+    # https://github.com/huggingface/transformers/issues/12631
+    # Remove the text column because the model does not accept raw text as an input
+    tokenized_datasets = tokenized_datasets.remove_columns(["text"])
+
+    # Rename the label column to labels because the model expects the argument to be named labels
+    tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
+
+    # Set the format of the dataset to return PyTorch tensors instead of lists
+    tokenized_datasets.set_format("torch")
+
+    return rh.table(data=tokenized_datasets).save()
 
 
 if __name__ == "__main__":
