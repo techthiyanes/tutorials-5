@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # Single A10G is only available on AWS, but you can use an A100 on GCP or Azure instead.
     # See this helpful guide to cloud GPUs for more details: https://www.paperspace.com/gpu-cloud-comparison
     gpu = rh.cluster(name='rh-a10g', instance_type='A10G:1', provider='cheapest')
-    # gpu.restart_grpc_server()
+
     generate_karlo_gpu = rh.send(fn=unclip_generate,
                                  hardware=gpu,
                                  reqs=['local:./',

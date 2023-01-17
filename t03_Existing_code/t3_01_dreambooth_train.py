@@ -5,7 +5,7 @@ import runhouse as rh
 
 def train_dreambooth(input_images_dir, class_name='person'):
     gpu = rh.cluster(name='rh-a100', instance_type='A100:1', provider='cheapest', use_spot=True)
-    # gpu.restart_grpc_server(resync_rh=False)
+
     training_function_gpu = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,

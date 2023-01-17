@@ -1,14 +1,15 @@
 import runhouse as rh
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, DDIMScheduler
 import torch
 
 
-def sd_generate_with_pinning(prompt, num_images=1, steps=100, guidance_scale=7.5,
-                             model_id='stabilityai/stable-diffusion-2-base',
-                             dtype=torch.float16, revision="fp16"):
+def sd_generate_pinned(prompt, num_images=1, steps=100, guidance_scale=7.5,
+                       model_id='stabilityai/stable-diffusion-2-base',
+                       dtype=torch.float16, revision="fp16"):
     pipe = rh.get_pinned_object(model_id)
     if pipe is None:
         pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype, revision=revision).to("cuda")
+        pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)  # Apparently works better for dreambooth
         rh.pin_to_memory(model_id, pipe)
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 
