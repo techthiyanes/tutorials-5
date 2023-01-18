@@ -15,8 +15,8 @@ def tokenize_dataset(hf_dataset):
         hf_dataset = rh.table(name=hf_dataset).convert_to('hf_dataset')
 
     tokenized_datasets = hf_dataset.map(tokenize_function,
-                                        # input_columns=['text'],
-                                        # num_proc=os.cpu_count(),
+                                        input_columns=['text'],
+                                        num_proc=os.cpu_count(),
                                         batched=True)
 
     # https://github.com/huggingface/transformers/issues/12631
@@ -26,10 +26,8 @@ def tokenize_dataset(hf_dataset):
     # Rename the label column to labels because the model expects the argument to be named labels
     tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
-    # Set the format of the dataset to return PyTorch tensors instead of lists
-    tokenized_datasets.set_format("torch")
-
-    return rh.table(data=tokenized_datasets).save()
+    # When fine-tuning in the next tutorial we'll need the data saved as pytorch tensors and not lists
+    return rh.table(data=tokenized_datasets, metadata={'stream_format': 'torch'}).save()
 
 
 if __name__ == "__main__":
@@ -37,7 +35,9 @@ if __name__ == "__main__":
 
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
-                      name="BERT_preproc_32cpu")
+                      name="BERT_preproc_32cpu",
+                      reqs=['torch==1.12.0'])
+
     preproc.hardware.restart_grpc_server()
 
     # TODO [DG] this folder is not setting properly
@@ -49,14 +49,15 @@ if __name__ == "__main__":
                                   dryrun=True)
 
     yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
+
     # from_cluster converts the table's file references to sftp file references without copying it
     preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.hardware)
 
     batches = preprocessed_yelp.stream(batch_size=100)
     for idx, batch in enumerate(batches):
         # convert each batch into a huggingface dataset
-        batch_dataset = preprocessed_yelp.to_dataset(batch)
-        print(f"Preprocessed batch:\n {batch_dataset}")
+        batch_as_dataset = preprocessed_yelp.to_dataset(batch)
+        print(batch_as_dataset)
         break
 
-    preprocessed_yelp.save(name="preprocessed-tokenized-dataset")
+    preprocessed_yelp.save(name="preprocessed-tokenized-dataset", overwrite=True)

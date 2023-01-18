@@ -10,6 +10,10 @@ from tqdm.auto import tqdm  # progress bar
 def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_size=8):
     # https://huggingface.co/docs/transformers/accelerate
     accelerator = Accelerator()
+
+    # Set data format to pytorch tensors
+    preprocessed_table.set_format('torch')
+
     train_dataloader = DataLoader(preprocessed_table, batch_size=batch_size)
     train_dataloader, model, optimizer = accelerator.prepare(train_dataloader, model, optimizer)
 
@@ -18,9 +22,9 @@ def fine_tune_model(preprocessed_table, model, optimizer, num_epochs=3, batch_si
         name="linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
 
     progress_bar = tqdm(range(num_training_steps))
-
     model.train()
 
+    # https://huggingface.co/course/chapter8/2?fw=pt
     for epoch in range(num_epochs):
         for batch in train_dataloader:
             outputs = model(**batch)
@@ -47,11 +51,12 @@ def get_optimizer(model, lr):
 
 if __name__ == "__main__":
     # rh.set_folder('~/bert/sentiment_analysis', create=True)
-    gpus = rh.cluster(name='v100', instance_type='V100:1', provider='aws', use_spot=False)
-    # gpus.restart_grpc_server()
+
+    gpu = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
+    # gpu.restart_grpc_server()
 
     ft_model = rh.send(fn=fine_tune_model,
-                       hardware=gpus,
+                       hardware=gpu,
                        name='finetune_ddp_1gpu',
                        reqs=['torch==1.12.0'],
                        load_secrets=True).save()
@@ -62,10 +67,11 @@ if __name__ == "__main__":
     # If you'd like to run this tutorial without an account or saved secrets, you can uncomment this line:
     # ft_model.send_secrets(providers=['sky'])
 
-    # The model and optimizer are sent to the cluster to be initialized - receive an object ref in return
-    model_on_gpu = rh.send(fn=get_model, hardware=gpus, dryrun=True)
-    optimizer_on_gpu = rh.send(fn=get_optimizer, hardware=gpus, dryrun=True)
+    # Send model and optimizer to the cluster to be initialized
+    model_on_gpu = rh.send(fn=get_model, hardware=gpu, dryrun=True)
+    optimizer_on_gpu = rh.send(fn=get_optimizer, hardware=gpu, dryrun=True)
 
+    # Receive an object ref for the model and optimizer
     bert_model = model_on_gpu.remote(num_labels=5, model_id='bert-base-cased')
     adam_optimizer = optimizer_on_gpu.remote(model=bert_model, lr=5e-5)
 
@@ -74,6 +80,6 @@ if __name__ == "__main__":
     trained_model = ft_model(preprocessed_table,
                              bert_model,
                              adam_optimizer,
-                             num_epochs=3).from_cluster(gpus)
+                             num_epochs=3).from_cluster(gpu)
 
     trained_model.save(name='yelp_fine_tuned_bert')
