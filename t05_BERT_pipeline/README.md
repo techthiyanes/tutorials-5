@@ -1,6 +1,4 @@
-# A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT on Multiple GPUs and Deploying
-
-_Watch time: ~10 minutes_
+# 👩‍🔧 Pipelines - Fine-tuning BERT and Deploying
 
 Runhouse is designed to make interacting with shared, heterogeneous
 hardware and data resources feel easy and natural. We'll test this 

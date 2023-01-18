@@ -2,6 +2,7 @@ from pathlib import Path
 
 import runhouse as rh
 
+# Based on https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py
 
 def train_dreambooth(input_images_dir, class_name='person'):
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure

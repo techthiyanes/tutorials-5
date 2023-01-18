@@ -1,4 +1,4 @@
-# Runhouse Basics 🐣 - Fun with Stable Diffusion and DALL-E
+# 🐣 Runhouse Basics - Fun with Stable Diffusion and FLAN-T5
 
 Runhouse is nothing more than an accessibility and sharing
 layer into your own cloud compute and data resources. Let's
@@ -40,7 +40,7 @@ Status: **Working.**
 
 # Appendices
 
-## [Appendix 01: Runhouse in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/x01_Colab_Stable_Diffusion.ipynb)
+## 01: [Runhouse in Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/x01_Colab_Stable_Diffusion.ipynb)
 
 If you prefer to read or run this tutorial in Colab, you can do so 
 [here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/x01_Colab_Stable_Diffusion.ipynb).
@@ -81,7 +81,7 @@ You can sync down your code or data from the cluster when you're done with:
 rh.folder(url='remote_directory', fs=rh.cluster('my_cluster').to('here', url='local_directory')
 ```
 
-## Appendix 02: Saving and Loading Secrets from Vault
+## 02: Saving and Loading Secrets from Vault
 
 ### Saving Secrets
 
@@ -129,7 +129,7 @@ To get secrets for a specific provider:
 my_creds = rh.Secrets.get(provider="aws")
 ```
 
-## Appendix 03: Advanced Send and Cluster usage
+## 03: Advanced Send and Cluster usage
 
 ### SSH / JupyterLab / Debugging
 

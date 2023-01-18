@@ -4,7 +4,8 @@ import runhouse as rh
 def launch_gradio_space(name):
     gr.Interface.load(name).launch()
 
-# TODO break into separate "UIs / interactivity" tutorials section
+# Based on https://huggingface.co/spaces/pharma/CLIP-Interrogator/
+
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS

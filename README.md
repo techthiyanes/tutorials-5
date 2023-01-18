@@ -29,10 +29,15 @@ the tools and usage patterns of Runhouse. We've devised them
 to chart a fun path through our features, but you're 
 welcome to hop around if you prefer.
 
-1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and FLAN-T5](t01_Stable_Diffusion/)
-1. [Fancy Runhouse 🧑‍🎨 - Dreambooth in <10 Minutes](t02_Dreambooth/)
-1. [A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT and Deploying](t02_BERT_fine_tuning/)
-1. [Online Runhouse 👩‍💻 - DLRM Online Training and Deployment](t04_Online_learning/) (~Q1)
+1. [🐣 Runhouse Basics - Fun with Stable Diffusion and FLAN-T5](t01_Stable_Diffusion/)
+1. [🧑‍🎨 Fancy Runhouse - Dreambooth in <10 Minutes](t02_Dreambooth/)
+1. [👩‍🚀 Portability - DALL-E to SD img2img from Notebook to Inference Service](t03_DALLE_SD_pipeline/)
+1. [👩‍👩‍👧‍👧 [WIP] Distributed - Large Model Training and Inference](t04_Distributed/)
+1. [👩‍🔧 [WIP] Pipelines - Fine-tuning BERT and Deploying](t02_BERT_fine_tuning/)
+
+[//]: # (1. [👩‍💻 [WIP] Online Learning - DLRM Online Training and Deployment]&#40;t04_Online_learning/&#41; &#40;~EOQ1&#41;)
+
+[//]: # (1. [🤝 [WIP] Sharing - Collaborate on a model with your friends]&#40;t05_Sharing/&#41; &#40;~EOQ1&#41;)
 
 If you would be so kind, we would love if you could have a notes doc open
 as you install and try Runhouse for the first time. Your first impressions, 
