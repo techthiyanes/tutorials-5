@@ -29,8 +29,6 @@ if __name__ == "__main__":
     for seq in sequences:
         print(seq)
 
-    # TODO highlight loading Send from_name here
-    from p02_faster_sd_generate import sd_generate_pinned
-    generate_gpu = rh.send(fn=sd_generate_pinned, hardware=gpu, reqs=['diffusers'])
+    generate_gpu = rh.send(name='sd_generate')
     images = generate_gpu(sequences, num_images=4, steps=50)
     [image.show() for image in images]
