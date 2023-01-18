@@ -2,7 +2,7 @@ import pickle
 
 import runhouse as rh
 
-from t2_01_preprocess import tokenize_function
+from t5_01_preprocess import tokenize_function
 
 
 def create_prediction_service(model_name):

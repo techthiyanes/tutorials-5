@@ -4,22 +4,20 @@ import runhouse as rh
 
 
 def train_dreambooth(input_images_dir, class_name='person'):
-    gpu = rh.cluster(name='rh-a100', instance_type='A100:1', provider='cheapest', use_spot=True)
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
     training_function_gpu = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,
-        reqs=['pip:./diffusers',
-              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',  # Need CUDA 11.6 for A100
-              'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
-              'transformers', 'accelerate', 'datasets'],
+        reqs=['pip:./diffusers'],
         name='train_dreambooth')
     training_function_gpu.run_setup(['mkdir dreambooth'])
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
 
     remote_image_dir = 'dreambooth/instance_images'
-    gpu.rsync(input_images_dir, remote_image_dir, up=True)
+    rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
 
     create_train_args = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',

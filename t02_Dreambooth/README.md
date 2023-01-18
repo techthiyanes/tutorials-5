@@ -12,7 +12,7 @@ and interesting with Runhouse in minutes, not months.
 Status: 
 * Training: **Working.**
 * Inference: **Working.**
-* Gradio: WIP
+* Gradio: **Working.**
 
 ## 02 Training a ResNet with TIMM
 

@@ -19,12 +19,9 @@ def dm_generate(prompt, num_images_sqrt=1, supercondition_factor=32, is_mega=Tru
 
 
 if __name__ == "__main__":
-    # Single A10G is only available on AWS, but you can use an A100 on GCP or Azure instead.
-    # See this helpful guide to cloud GPUs for more details: https://www.paperspace.com/gpu-cloud-comparison
-    gpu = rh.cluster(name='rh-a10g', instance_type='A10G:1')
-    generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu,
-                              reqs=['./', 'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116',
-                                    'min-dalle'])
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
+    generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu, reqs=['./', 'min-dalle'])
 
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_dm_gpu(my_prompt, num_images_sqrt=1, seed=random.randint(0, 1000))

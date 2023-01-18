@@ -24,10 +24,10 @@ def sd_img2img_generate(prompt, base_images, num_images=1,
 
 
 if __name__ == "__main__":
-    v100_gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
-    sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=v100_gpu,
-                                      reqs=['./', 'torch==1.12.0', 'diffusers'],
-                                      name='sd_img2img_generate')
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
+
+    sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=gpu, name='sd_img2img_generate')
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'
     rh_base_image = Image.open('rh_logo.png').convert("RGB")
@@ -37,4 +37,4 @@ if __name__ == "__main__":
     [image.show() for image in rh_logo_sd_images]
 
     # Now may be a good time to check on the memory utilization
-    v100_gpu.run(['nvidia-smi'])
+    gpu.run(['nvidia-smi'])

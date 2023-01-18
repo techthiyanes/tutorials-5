@@ -11,13 +11,14 @@ def sd_generate_pinned(prompt, num_images=1, steps=100, guidance_scale=7.5,
         pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype, revision=revision).to("cuda")
         pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)  # Apparently works better for dreambooth
         rh.pin_to_memory(model_id, pipe)
-    return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
+    return pipe(prompt, num_images_per_prompt=num_images,
+                num_inference_steps=steps, guidance_scale=guidance_scale).images
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
-    generate_gpu = rh.send(fn=sd_generate_with_simple_pinning, hardware=gpu,
-                           reqs=['./', 'torch==1.12.0', 'diffusers'], name='sd_generate')
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
+    generate_gpu = rh.send(fn=sd_generate_pinned, hardware=gpu, name='sd_generate').save()
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_gpu(my_prompt, num_images=4, steps=50)
     [image.show() for image in images]

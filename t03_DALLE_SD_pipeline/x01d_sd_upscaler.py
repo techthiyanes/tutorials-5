@@ -34,8 +34,7 @@ if __name__ == "__main__":
 
     # v100_gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
     sd_upscaler_generate_gpu = rh.send(fn=sd_upscaler_generate, hardware=dalle_generate.hardware,
-                                       reqs=['local:./', 'diffusers'],
-                                       name='sd_upscaler_generate')
+                                       reqs=['local:./'], name='sd_upscaler_generate')
 
     sd_upscaled_images = sd_upscaler_generate_gpu(my_prompt, base_images, guidance_scale=7.5,
                                                   num_images=2, steps=50)

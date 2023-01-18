@@ -6,11 +6,11 @@ import runhouse as rh
 # Here we simply demonstrate how to use Runhouse to run existing code from Github.
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10g', instance_type='A10G:1', provider='cheapest')
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
     train_gpu = rh.send(fn='https://github.com/huggingface/accelerate/blob/main/examples/nlp_example.py:training_function',
                         hardware=gpu,
-                        reqs=['pip:./accelerate', 'evaluate', 'scipy', 'scikit-learn', 'transformers',
-                              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu116'],
+                        reqs=['pip:./accelerate', 'evaluate', 'scipy', 'scikit-learn'],
                         name='train_bert_glue')
 
     train_args = argparse.Namespace(cpu=False, mixed_precision='bf16')

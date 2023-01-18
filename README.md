@@ -15,11 +15,11 @@
 why can't you do `my_fn.to('a_gcp_a100')` or `my_table.to('parquet_in_s3')`? 
 Runhouse allows just that: send code and data to any of your compute or 
 data infra, all in Python, and continue to use them eagerly exactly as they were. 
-Take a look at this [Stable Diffusion example](t01_Stable_Diffusion/t1_01_sd_generate.py) - 
+Take a look at this [Stable Diffusion example](t01_Stable_Diffusion/p01_sd_generate.py) - 
 it lets you run Stable Diffusion inferences on your own cloud GPU in minutes,
 but there's no magic yaml, DSL, or "submitting for execution." 
 And because it's not stateless, we can pin the model to GPU memory 
-([tutorial 1-01a](t01_Stable_Diffusion/t1_01a_object_pinning.py)), and get ~2.5s/image 
+([tutorial 1-01a](t01_Stable_Diffusion/p02_faster_sd_generate.py)), and get ~1.5s/image 
 inference time before any compilation. There's much more, like being able to access your 
 code, compute, and data from anywhere with a Python interpreter and an internet connection, 
 or sharing them with collaborators, so let's jump in.
@@ -29,9 +29,9 @@ the tools and usage patterns of Runhouse. We've devised them
 to chart a fun path through our features, but you're 
 welcome to hop around if you prefer.
 
-1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and DALL-E](t01_Stable_Diffusion/)
+1. [Runhouse Basics 🐣 - Fun with Stable Diffusion and FLAN-T5](t01_Stable_Diffusion/)
+1. [Fancy Runhouse 🧑‍🎨 - Dreambooth in <10 Minutes](t02_Dreambooth/)
 1. [A Runhouse Pipeline 👩‍🔧 - Fine-tuning BERT and Deploying](t02_BERT_fine_tuning/)
-1. [Fancy Runhouse 🧑‍🎨 - Dreambooth or TIMM in <10 Minutes](t03_Existing_code/)
 1. [Online Runhouse 👩‍💻 - DLRM Online Training and Deployment](t04_Online_learning/) (~Q1)
 
 If you would be so kind, we would love if you could have a notes doc open
