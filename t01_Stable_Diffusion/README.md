@@ -196,7 +196,8 @@ There are a number of ways to call a Send beyond just `__call__`.
 
 `.remote` will call the function async (using Ray) and return a reference (Ray ObjectRef) to the object on the cluster. 
 You can pass the ref into another send and it will be automatically dereferenced once on the cluster. 
-This is a convenient way to avoid passing large objects back and forth to your laptop.
+This is a convenient way to avoid passing large objects back and forth to your laptop, or to 
+run longer execution in notebooks without locking up the kernel.
 ```python
 images_ref = generate_gpu.remote('A dog.', num_images=1, steps=50)
 images = rh.get(images_ref)

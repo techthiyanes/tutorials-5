@@ -31,6 +31,8 @@ if __name__ == "__main__":
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'
     rh_base_image = Image.open('rh_logo.png').convert("RGB")
+
+    # This takes ~3 mins to run the first time to download the model, and after that should only take ~1 sec per image.
     rh_logo_sd_images = sd_img2img_generate_gpu(rh_prompt, [rh_base_image],
                                                 strength=.75, guidance_scale=7.5,
                                                 num_images=4, steps=50)

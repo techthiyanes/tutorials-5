@@ -20,8 +20,8 @@ if __name__ == "__main__":
 
     generate_karlo_gpu = rh.send(fn=unclip_generate, hardware=gpu, name='karlo_generate').save()
 
-    # The model takes a long time to download and send to GPU the first time you run, but after that it only takes
-    # 4 seconds per image.
+    # The first time we run this it will take ~8 minutes to download the model, which is pretty large.
+    # Subsequent calls will only take ~1 second per image
     my_prompt = 'beautiful fantasy painting of Tom Hanks as Samurai in sakura field'
     images = generate_karlo_gpu(my_prompt, num_images=4)
     [image.show() for image in images]
