@@ -52,8 +52,8 @@ def get_optimizer(model, lr):
 if __name__ == "__main__":
     # rh.set_folder('~/bert/sentiment_analysis', create=True)
 
-    gpu = rh.cluster(name='v100', instance_type='V100:1', provider='cheapest', use_spot=False)
-    # gpu.restart_grpc_server()
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
     ft_model = rh.send(fn=fine_tune_model,
                        hardware=gpu,
