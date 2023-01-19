@@ -7,7 +7,7 @@ tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
 
 def tokenize_function(examples):
-    return tokenizer(examples["text"], padding="max_length", truncation=True)
+    return tokenizer(examples, padding="max_length", truncation=True)
 
 
 def tokenize_dataset(hf_dataset):
@@ -27,21 +27,14 @@ def tokenize_dataset(hf_dataset):
     tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
     # When fine-tuning in the next tutorial we'll need the data saved as pytorch tensors and not lists
-    return rh.table(data=tokenized_datasets, metadata={'stream_format': 'torch'}).save()
+    return rh.table(data=tokenized_datasets, stream_format='torch').save()
 
 
 if __name__ == "__main__":
-    # rh.set_folder('~/bert', create=True)
-
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
                       name="BERT_preproc_32cpu",
                       reqs=['torch==1.12.0'])
-
-    preproc.hardware.restart_grpc_server()
-
-    # TODO [DG] this folder is not setting properly
-    # rh.set_folder('./sentiment_analysis', create=True)
 
     # Not being saved, just a helper here
     remote_load_dataset = rh.send(fn=load_dataset,
@@ -55,9 +48,7 @@ if __name__ == "__main__":
 
     batches = preprocessed_yelp.stream(batch_size=100)
     for idx, batch in enumerate(batches):
-        # convert each batch into a huggingface dataset
-        batch_as_dataset = preprocessed_yelp.to_dataset(batch)
-        print(batch_as_dataset)
+        print(batch)
         break
 
     preprocessed_yelp.save(name="preprocessed-tokenized-dataset", overwrite=True)
