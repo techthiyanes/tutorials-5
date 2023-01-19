@@ -10,15 +10,16 @@ and interesting with Runhouse in minutes, not months.
 Dreambooth is a popular app that lets you fine-tune Stable Diffusion on your
 own images so you can reference your new concept in Stable Diffusion inferences.
 Hugging Face published a [great tutorial](https://huggingface.co/blog/dreambooth),
-but it's not easy to set up on your own hardware, so various Colabs are circulating
+but it's never easy to set up on your own hardware, so various Colabs are circulating
 to help people get started. We can run way faster on our own GPU, and we don't even 
-need to clone down the repo. This tutorial shows how to send a function to your 
-hardware from just a github url pointing to the function!
+need to clone down the repo! This tutorial shows how to send a function to your 
+hardware from just a github url pointing to the function.
 
 It also shows you basics of the data side of Runhouse, by:
 1) Creating an `rh.folder` with the training images and then sending it to the cluster with
 `folder.to(my_gpu)`. 
 2) Similarly, sending the folder containing the trained model to blob storage.
+
 This is the tip of the iceberg, and there's much more about data on the way.
 
 Status:
@@ -28,10 +29,10 @@ Status:
 ## 02 [Running Huggging Face Spaces](./p02_gradio_clip_interrogator.py)
 
 Writing prompts is hard. Luckily, CLIP Interrogator can take images and generate
-Stable Diffusion prompts from them. There's a popular Hugging Face Space for CLIP 
-Interrogator, but it'd be faster to run on our own GPU. This tutorial shows you 
-how easy it is to take any gradio app and send it to your GPU, tunneled into 
-your browser.
+Stable Diffusion prompts from them. There's a popular [Hugging Face Space for CLIP 
+Interrogator](https://huggingface.co/spaces/pharma/CLIP-Interrogator), but it'd run 
+faster on our own GPU. This tutorial shows you how easy it is to take any gradio app 
+and send it to your GPU, tunneled into your browser.
 
 Status: **Working.**
 

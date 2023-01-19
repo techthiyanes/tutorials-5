@@ -19,7 +19,7 @@ laptop with:
 ```commandline
 python p01_sd_generate.py
 ```
-Status: **Working.** \
+Status: **Working.** 
 
 ## 02 [Advanced `rh.send` Usage](./p02_faster_sd_generate.py)
 
@@ -29,14 +29,19 @@ It's meant to be read in Github, or run locally on your laptop with:
 ```commandline
 python p02_faster_sd_generate.py
 ```
-Status: **Working.** \
+Status: **Working.** 
 
 ## 03 [Reusing a Cluster and Pipelining Sends](./p03_flan_t5_xl_generate.py)
 
 Generating prompts is tiring, so let's use FLAN-T5 to do it for us. We'll send a
 FLAN-T5 inference function to our GPU, and then pipe the outputs into our Stable 
 Diffusion service.
-Status: **Working.**
+
+It's meant to be read in Github, or run locally on your laptop with:
+```commandline
+python p03_flan_t5_xl_generate.py
+```
+Status: **Working.** 
 
 # Appendices
 
@@ -54,11 +59,14 @@ into the Colab environment manually). See [Appendix 02](#appendix-02-saving-and-
 **Note, if you simply prefer to work in notebooks but don't need a hosted notebook specifically,** 
 you can simply call the following to tunnel a JupyterLab server into your local 
 browser from your Runhouse cluster or send:
+```commandline
+runhouse notebook my_cluster
+```
+or in python:
 ```python
-import runhouse as rh
-rh.cluster('my_cluster').notebook()
+my_send.notebook()
 # or
-rh.send('my_send').notebook()
+my_cluster.notebook()
 ```
 
 ### Notes on notebooks
@@ -133,10 +141,11 @@ my_creds = rh.Secrets.get(provider="aws")
 
 ### SSH / JupyterLab / Debugging
 
+To start an ssh session into the cluster so you can poke around or debug:
 ```commandline
 ssh rh-v100
 ```
-Will start an ssh session into the cluster so you can poke around or debug. Or in python:
+Or in python:
 ```python
 my_send.ssh()
 ```
@@ -152,6 +161,10 @@ cluster.restart_grpc_server()
 ```
 
 If you prefer to work in notebooks, you can tunnel a JupyterLab server into your local browser:
+```commandline
+runhouse notebook my_cluster
+```
+or in python:
 ```python
 my_send.notebook()
 # or
@@ -179,7 +192,7 @@ gpu.ssh_tunnel(local_port=7860, remote_port=7860)
 
 ### Send call types
 
-There are a number of ways to call a Send beyond just __call__.
+There are a number of ways to call a Send beyond just `__call__`.
 
 `.remote` will call the function async (using Ray) and return a reference (Ray ObjectRef) to the object on the cluster. 
 You can pass the ref into another send and it will be automatically dereferenced once on the cluster. 

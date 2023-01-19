@@ -23,16 +23,17 @@ Kakaobrain just open-sourced Karlo, a full DALL-E reproduction, so we'll use tha
 images. This tutorial will help us play around with this idea in a notebook setting
 and get a sense of whether it's worth pursuing.
 
-This notebook can be run locally with Jupyter or in Colab. If you're running locally, feel free to skip
-the login steps at the beginning of the notebook.
+This notebook can be run locally with Jupyter or in 
+[Colab]((https://colab.research.google.com/github/run-house/tutorials/blob/main/t03_DALLE_SD_pipeline/p01_Colab_Dalle_to_SD_img2img.ipynb)). 
+If you're running locally, feel free to skip the login steps at the beginning of the notebook.
 
 Status: **Working.**
 
 ## 02 [DALL-E to SD img2img Inference Service](../t03_DALLE_SD_pipeline/p02_dalle_to_sd_img2img.py)
 
-Spoiler alert: it's worth pursuing! Let's turn this into a service that we can call from anywhere. This 
+Spoiler alert: it works! Let's turn this into a service that we can call from anywhere. This 
 tutorial demonstrates how easy it is to take resources you created in a notebook and reuse them in
-the "real world."
+the real world, without having to copy and paste or refactor your code.
 
 If you ran the previous tutorial in Colab, you needed to be logged in for the resources
 to be available for this tutorial to use. If you were not logged in or didn't run in Colab, you can also

@@ -2,6 +2,7 @@
 # pip install git+https://github.com/run-house/runhouse.git@latest_patch
 
 import runhouse as rh
+import sky
 
 # ----------- Logging In ------------
 # In order to use Runhouse across environments, such as reusing a service from inside a Colab
@@ -42,7 +43,8 @@ rh.configs.upload_defaults()
 
 # ----------- Checking your Cloud Credentials ------------
 # To check whether you have cloud credentials properly set up in your environment, run:
-# `sky check` in your command line.
+# `sky check` in your command line. Or, run the following in Python:
+sky.check.check()
 
 # ----------- Viewing RPC logs ------------
 # We will set up proper log persistence and steaming shortly, but in the meantime, if you need to see the

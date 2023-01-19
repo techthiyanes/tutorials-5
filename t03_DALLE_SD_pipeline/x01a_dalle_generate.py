@@ -18,10 +18,7 @@ if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
-    generate_karlo_gpu = rh.send(fn=unclip_generate,
-                                 hardware=gpu,
-                                 reqs=['local:./'],
-                                 name='karlo_generate')
+    generate_karlo_gpu = rh.send(fn=unclip_generate, hardware=gpu, name='karlo_generate').save()
 
     # The model takes a long time to download and send to GPU the first time you run, but after that it only takes
     # 4 seconds per image.

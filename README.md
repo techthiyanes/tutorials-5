@@ -19,8 +19,8 @@ Take a look at this [Stable Diffusion example](t01_Stable_Diffusion/p01_sd_gener
 it lets you run Stable Diffusion inferences on your own cloud GPU in minutes,
 but there's no magic yaml, DSL, or "submitting for execution." 
 And because it's not stateless, we can pin the model to GPU memory 
-([tutorial 1-01a](t01_Stable_Diffusion/p02_faster_sd_generate.py)), and get ~1.5s/image 
-inference time before any compilation. There's much more, like being able to access your 
+([tutorial 1-01a](t01_Stable_Diffusion/p02_faster_sd_generate.py)), and get super fast inference 
+(~1.5s/image for SD-2 on an A100 before any compilation!). There's much more, like being able to access your 
 code, compute, and data from anywhere with a Python interpreter and an internet connection, 
 or sharing them with collaborators, so let's jump in.
 
@@ -33,7 +33,7 @@ welcome to hop around if you prefer.
 1. [🧑‍🎨 Fancy Runhouse - Dreambooth in <10 Minutes](t02_Dreambooth/)
 1. [👩‍🚀 Portability - DALL-E to SD img2img from Notebook to Inference Service](t03_DALLE_SD_pipeline/)
 1. [👩‍👩‍👧‍👧 [WIP] Distributed - Large Model Training and Inference](t04_Distributed/)
-1. [👩‍🔧 [WIP] Pipelines - Fine-tuning BERT and Deploying](t02_BERT_fine_tuning/)
+1. [👩‍🔧 [WIP] Pipelines - Fine-tuning BERT and Deploying](t05_BERT_pipeline/)
 
 [//]: # (1. [👩‍💻 [WIP] Online Learning - DLRM Online Training and Deployment]&#40;t04_Online_learning/&#41; &#40;~EOQ1&#41;)
 

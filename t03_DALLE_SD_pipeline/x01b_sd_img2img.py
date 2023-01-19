@@ -27,7 +27,7 @@ if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
-    sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=gpu, name='sd_img2img_generate')
+    sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=gpu, name='sd_img2img_generate').save()
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'
     rh_base_image = Image.open('rh_logo.png').convert("RGB")

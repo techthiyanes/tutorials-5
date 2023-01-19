@@ -21,7 +21,7 @@ def dm_generate(prompt, num_images_sqrt=1, supercondition_factor=32, is_mega=Tru
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
-    generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu, reqs=['./', 'min-dalle'])
+    generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu, reqs=['./', 'min-dalle'], name='dm_generate').save()
 
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_dm_gpu(my_prompt, num_images_sqrt=1, seed=random.randint(0, 1000))
