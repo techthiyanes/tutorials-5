@@ -45,4 +45,4 @@ If you prefer to read or run this tutorial in Colab, you can do so
 See [Tutorial 1 Appendices 01 and 02](../t01_Stable_Diffusion/README.md#appendices) for more details
 about logging in and running in notebooks.
 
-Status: WIP
+Status: **Working.**
