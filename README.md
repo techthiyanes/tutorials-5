@@ -48,12 +48,16 @@ pain points, and highlights are very valuable to us.
 See [getting started](https://github.com/run-house/runhouse#-getting-started).
 
 ### ⏰ If you only have 10 minutes:
-* See our dreambooth tutorials ([training](https://github.com/run-house/tutorials/blob/main/t03_Existing_code/t3_01_dreambooth_train.py), 
-[inference](https://github.com/run-house/tutorials/blob/main/t03_Existing_code/t3_01a_dreambooth_predict.py)). 
+* Take a look at the [Stable Diffusion example](t01_Stable_Diffusion/p01_sd_generate.py) 
+  to understand how Runhouse allows you to interact with remote compute. 
+  * The [FLAN-T5-XL](t01_Stable_Diffusion/p03_flan_t5_xl_generate.py) example then shows how we can easily reuse hardware and services. 
+* See our dreambooth tutorials ([training](./t02_Dreambooth/p01_dreambooth_train.py), 
+[inference](./t02_Dreambooth/p01a_dreambooth_predict.py)). 
 We think they're the easiest way anywhere to run dreambooth on your own cloud GPU 
 (for managed dreambooth, check out [Modal Labs's dreambooth](https://modal.com/docs/guide/ex/dreambooth_app) or 
 [StableBoost](http://stableboost.ai/)).
-* See our BERT fine-tuning pipeline example, [here](./t02_BERT_fine_tuning).
+* See how to launch a Gradio app to run CLIP Interrogator, [here](t02_Dreambooth/p02_gradio_clip_interrogator.py).
+* See our BERT fine-tuning pipeline example, [here](./t05_BERT_pipeline).
 
 ## 🚨 Caution: This is an Unstable Alpha 🚨
 

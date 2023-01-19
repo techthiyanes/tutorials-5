@@ -15,7 +15,7 @@ def fine_tune_model(model, optimizer, num_epochs=3, batch_size=8):
     preprocessed_table = rh.table(name="preprocessed-tokenized-dataset")
 
     # Set data format to pytorch tensors
-    preprocessed_table.steam_format = 'torch'
+    preprocessed_table.stream_format = 'torch'
 
     train_dataloader = DataLoader(preprocessed_table, batch_size=batch_size)
     train_dataloader, model, optimizer = accelerator.prepare(train_dataloader, model, optimizer)

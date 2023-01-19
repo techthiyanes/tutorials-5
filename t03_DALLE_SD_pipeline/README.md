@@ -10,7 +10,7 @@ about logging in and running in notebooks.
 This script will show you how to login and set a few default configurations. 
 The code is meant to be read in Github, or run locally on your laptop with:
 ```commandline
-python t1_00_quick_setup.py
+python p00_logging_in.py
 ```
 Status: **Working.**
 
