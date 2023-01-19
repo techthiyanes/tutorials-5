@@ -11,9 +11,8 @@ def train_dreambooth(input_images_dir, class_name='person'):
     training_function_gpu = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,
-        reqs=['pip:./diffusers'],
+        reqs=['pip:./diffusers', 'datasets'],
         name='train_dreambooth')
-    training_function_gpu.run_setup(['mkdir dreambooth'])
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
 
@@ -42,7 +41,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
     train_args.num_class_images = 200
     train_args.checkpointing_steps = 400
     # train_args.resume_from_checkpoint = 'latest'
-    train_args.max_train_steps = 1200
+    train_args.max_train_steps = 800
 
     training_function_gpu(train_args)
 
