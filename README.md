@@ -67,9 +67,7 @@ expect a lot of things to break off the bat.
 
 ## 🙋‍♂️ Getting Help
 
-Please request to join our 
-[slack workspace here](https://join.slack.com/t/runhouse/shared_invite/zt-1j7pwsok1-vQy0Gesh55A2fPyyEVq8nQ), 
-or email us, or create an issue.
+Please join our [discord server here](https://discord.gg/RnhB6589Hs), or email us, or create an issue.
 
 ## 🕵️‍♀️ Where is the compute?
 
