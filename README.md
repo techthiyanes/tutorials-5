@@ -1,14 +1,4 @@
 <h1 align="center">🏃‍♀️Runhouse 🏠 Tutorials</h1>
-<p align="center">
-  <a href="https://runhouse-docs.readthedocs-hosted.com/en/latest/"> 
-    <img alt="Documentation" src="https://readthedocs.com/projects/runhouse-docs/badge/?version=latest">
-  </a>
- 
-  <a href="https://join.slack.com/t/runhouse/shared_invite/zt-1j7pwsok1-vQy0Gesh55A2fPyyEVq8nQ"> 
-    <img alt="Join Slack" src="https://img.shields.io/badge/Runhouse-Join%20Slack-fedcba?logo=slack">
-  </a>
-</p>
-
 
 
 **tldr;** PyTorch lets you send any Python code or data `.to(device)`, so 
@@ -47,6 +37,14 @@ pain points, and highlights are very valuable to us.
 
 See [getting started](https://github.com/run-house/runhouse#-getting-started).
 
+tldr;
+```commandline
+pip install git+https://github.com/run-house/runhouse.git@latest_patch
+sky check
+# Optionally, for portability (e.g. Colab):
+runhouse login
+```
+
 ### ⏰ If you only have 10 minutes:
 * Take a look at the [Stable Diffusion example](t01_Stable_Diffusion/p01_sd_generate.py) 
   to understand how Runhouse allows you to interact with remote compute. 
@@ -56,7 +54,8 @@ See [getting started](https://github.com/run-house/runhouse#-getting-started).
 We think they're the easiest way anywhere to run dreambooth on your own cloud GPU 
 (for managed dreambooth, check out [Modal Labs's dreambooth](https://modal.com/docs/guide/ex/dreambooth_app) or 
 [StableBoost](http://stableboost.ai/)).
-* See how to launch a Gradio app to run CLIP Interrogator, [here](t02_Dreambooth/p02_gradio_clip_interrogator.py).
+* See how to launch a Gradio app to run CLIP Interrogator (generate Stable Diffusion prompts from images), 
+[here](t02_Dreambooth/p02_gradio_clip_interrogator.py).
 * See our BERT fine-tuning pipeline example, [here](./t05_BERT_pipeline).
 
 ## 🚨 Caution: This is an Unstable Alpha 🚨

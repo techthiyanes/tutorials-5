@@ -26,21 +26,27 @@ def tokenize_dataset(hf_dataset):
     # Rename the label column to labels because the model expects the argument to be named labels
     tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
-    # When fine-tuning in the next tutorial we'll need the data saved as pytorch tensors and not lists
-    return rh.table(data=tokenized_datasets, stream_format='torch').save()
+    # We'll return the table object here so the user of this service can save it to whatever datastore they
+    # prefer, under whichever Runhouse name they prefer. We need to call save() to write it down to the local
+    # filesystem on the cluster, as we're only returning a reference to the user rather than the full dataset.
+    return rh.table(data=tokenized_datasets).save()
 
 
 if __name__ == "__main__":
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
-                      name="BERT_preproc_32cpu",
-                      reqs=['torch==1.12.0'])
+                      name="BERT_preproc_32cpu")
 
-    # Not being saved, just a helper here
+    # Not being saved, just a helper here to load the dataset on the cluster instead of locally
+    # (and then sending it up).
     remote_load_dataset = rh.send(fn=load_dataset,
                                   hardware=preproc.hardware,
+                                  reqs=['local:./', 'datasets', 'transformers'],
                                   dryrun=True)
 
+    # Notice how we call this function with `.remote` - this calls the function async, leaves the result on the
+    # cluster, and gives us back a reference (Ray ObjectRef) to the object that we can then pass to other functions
+    # on the cluster, and they'll auto-resolve to our object.
     yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
 
     # from_cluster converts the table's file references to sftp file references without copying it
