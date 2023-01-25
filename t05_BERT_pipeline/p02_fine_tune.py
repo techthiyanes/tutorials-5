@@ -22,8 +22,9 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
 
     # https://huggingface.co/course/chapter8/2?fw=pt
     for epoch in range(num_epochs):
-        for batch in preprocessed_table.stream(batch_size=batch_size):
-            batch = {k: v.to(device) for k, v in batch.items()}
+        for batch in preprocessed_table.stream(batch_size=batch_size, as_dict=True):
+            # TODO [JL] - Use a smaller torch type (IntTensor doesn't work)
+            batch = {k: v.type(torch.LongTensor).to(device) for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()
@@ -56,7 +57,7 @@ if __name__ == "__main__":
     ft_model = rh.send(fn=fine_tune_model,
                        hardware=gpu,
                        load_secrets=True,
-                       name='finetune_ddp_1gpu',).save()
+                       name='finetune_ddp_1gpu').save()
 
     # The load_secrets argument above will load the secrets onto the cluster from your Runhouse account (api.run.house),
     # and will only work if you've already uploaded secrets to runhouse (e.g. during `runhouse login`). You need your
@@ -79,4 +80,5 @@ if __name__ == "__main__":
                              num_epochs=3).from_cluster(gpu)
 
     # Save model in s3 bucket, and the metadata in Runhouse RNS
-    trained_model.from_cluster(gpu).to('s3').save(name='yelp_fine_tuned_bert')
+    print("trained model:\n", trained_model)
+    trained_model.to('s3').save(name='yelp_fine_tuned_bert')
