@@ -13,8 +13,8 @@ def causal_lm_generate(prompt, model_id='google/flan-t5-xl', **model_kwargs):
     return tokenizer.batch_decode(outputs, skip_special_tokens=True)
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
+    # gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
+    gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
     flan_t5_generate = rh.send(fn=causal_lm_generate,
                                hardware=gpu,
@@ -33,5 +33,5 @@ if __name__ == "__main__":
     # If you logged into Runhouse, it was saved on our Resource Naming Server. If you didn't, it saved in
     # the rh/ directory of the top-level git directory.
     generate_gpu = rh.send(name='sd_generate')
-    images = generate_gpu(sequences, num_images=4, steps=50)
+    images = generate_gpu(sequences, num_images=1, steps=50)
     [image.show() for image in images]
