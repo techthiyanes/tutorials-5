@@ -1,7 +1,7 @@
-import gradio as gr
 import runhouse as rh
 
 def launch_gradio_space(name):
+    import gradio as gr
     gr.Interface.load(name).launch()
 
 # Based on https://huggingface.co/spaces/pharma/CLIP-Interrogator/
