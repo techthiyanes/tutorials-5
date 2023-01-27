@@ -9,9 +9,10 @@ def train_dreambooth(input_images_dir, class_name='person'):
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
     training_function_gpu = rh.send(
-        fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
+        fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,
-        reqs=['pip:./diffusers', 'datasets'],
+        reqs=['pip:./diffusers', 'datasets', 'accelerate', 'transformers',
+              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'],
         name='train_dreambooth')
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
@@ -20,7 +21,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
     rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
 
     create_train_args = rh.send(
-        fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
+        fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:parse_args',
         hardware=gpu, reqs=[])
     train_args = create_train_args(input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
                                                '--instance_data_dir', remote_image_dir,

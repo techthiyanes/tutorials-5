@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     flan_t5_generate = rh.send(fn=causal_lm_generate,
                                hardware=gpu,
-                               reqs=['local:./'],
+                               reqs=['./'],
                                name='flan_t5_generate')
 
     # The first time this runs it will take ~7 minutes to download the model. After that it takes ~4 seconds.

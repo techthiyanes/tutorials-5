@@ -35,13 +35,13 @@ def tokenize_dataset(hf_dataset):
 if __name__ == "__main__":
     preproc = rh.send(fn=tokenize_dataset,
                       hardware="^rh-32-cpu",
+                      reqs=['local:./', 'datasets', 'transformers'],
                       name="BERT_preproc_32cpu")
 
     # Not being saved, just a helper here to load the dataset on the cluster instead of locally
     # (and then sending it up).
     remote_load_dataset = rh.send(fn=load_dataset,
                                   hardware=preproc.hardware,
-                                  reqs=['local:./', 'datasets', 'transformers'],
                                   dryrun=True)
 
     # Notice how we call this function with `.remote` - this calls the function async, leaves the result on the
