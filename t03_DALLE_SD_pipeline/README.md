@@ -11,6 +11,8 @@ totally trivial to do with Runhouse, so let's try it out!
 
 ## 00 Quick Setup
 
+[//]: # (TODO Get rid of this and link out to getting started)
+
 This step is optional, but creating a Runhouse account allows us to 
 conveniently jump into a Colab with our credentials and resources at the ready.
 See [Getting Started](../00_Getting_Started/) for more details
@@ -21,18 +23,17 @@ The code is meant to be read in Github, or run locally on your laptop with:
 ```commandline
 python p00_logging_in.py
 ```
-Status: **Working.**
 
 ## 01 Experimenting with DALL-E to SD img2img in a Notebook
 
 Kakaobrain just open-sourced Karlo, a full DALL-E reproduction, so we'll use that to generate our seed 
 images. This tutorial will help us play around with this idea in a notebook setting.
 
+[//]: # (TODO Make more visible)
 This notebook can be run locally with Jupyter or in Colab. Please refer to the
 [Colab](https://colab.research.google.com/github/run-house/tutorials/blob/main/t03_DALLE_SD_pipeline/p01_Colab_Dalle_to_SD_img2img.ipynb) for a code walkthrough. 
 If you're running locally, feel free to skip the login steps at the beginning of the notebook.
 
-Status: **Working.**
 
 ## 02 DALL-E to SD img2img Inference Service
 
@@ -68,5 +69,3 @@ my_prompt = 'portrait of Harrison Ford eating a luscious Christmas ham'
 rh_logo_sd_images = dalle2sd_pipeline(my_prompt, num_dalle_images=2, num_sd_images=2)
 [image.show() for image in rh_logo_sd_images]
 ```
-
-Status: **Working.**

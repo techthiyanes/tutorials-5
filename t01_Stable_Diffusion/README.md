@@ -15,6 +15,8 @@ running Stable Diffusion.
 
 ## 01 Stable Diffusion on a Cloud GPU in 5 lines of code
 
+[//]: # (TODO add hardware instructions)
+
 Running Stable Diffusion from your laptop is hard, and waiting for queues or 
 free-tier hardware can be a drag. We'll use Runhouse to experiment with Stable 
 Diffusion from your laptop, while the model actually runs on an A100/A10G

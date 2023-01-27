@@ -1,3 +1,14 @@
+# 📜
+
+[//]: # (# TODO [DG])
+2. Logging in and setting configurations
+   1. Getting set up on cloud providers / GPU quota
+1. Sends and Clusters 
+   2. ssh / debugging
+1. Folders, Blobs, and Tables
+1. Runhouse in Notebooks
+1. Saving and loading resources
+
 ## 01: Runhouse in Colab
 
 It is easier to run in Colab if you create a Runhouse account so you can store your secrets

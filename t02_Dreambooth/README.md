@@ -31,6 +31,9 @@ cluster with `folder.to(my_gpu)`.
 This is the tip of the iceberg, and there's much more about data on the way, so
 let's get started!
 
+[//]: # (TODO Note colab and run instructions &#40;e.g. num images&#41; )
+[//]: # (TODO add hardware instructions)
+
 We present a rough walk through of the code below.
 To run this tutorial, please run locally from your laptop:
 ```commandline
@@ -102,10 +105,6 @@ images = generate_dreambooth(my_prompt,
                              steps=100)
 [image.show() for image in images]
 ```
-
-Status:
-* Training: **Working.**
-* Inference: **Working.**
 
 ## 02 CLIP Interrogator
 ```commandline
