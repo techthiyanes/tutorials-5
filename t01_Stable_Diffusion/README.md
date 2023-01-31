@@ -53,8 +53,11 @@ def sd_generate(prompt, num_images=1, steps=100, guidance_scale=7.5, model_id='s
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 ```
 
-To run the function, we create a Python callable using `rh.send`. This callable
-functions just like our original function. We can call it and get back results
+To run the function, we create a Python callable using `rh.send`, which stands
+for **s**erverless **end**point, and pass in the corresponding hardware, or
+cluster, that we want it to be run on, along with any dependencies or
+requirements to install or sync over to the remote cluster. This callable
+functions just like our original function; we can call it and get back results
 locally, except the computation happens on the specified cluster hardware.
 
 > **Note**:
@@ -90,7 +93,7 @@ By default, the GPU will terminate after 30 minutes, but let's keep it up to reu
 ```python
 gpu.keep_warm()
 
-# To stop the cluster after 10 min if inactivity
+# To stop the cluster after 10 min of inactivity
 # gpu.keep_warm(autostop_mins=10)
 
 # To terminate the cluster through runhouse. It can also be terminated directly through the cloud provider
@@ -98,11 +101,9 @@ gpu.keep_warm()
 # gpu.teardown()  
 ```
 
-Status: **Working.** 
-
 ## 02 Fast Stable Diffusion with Model Pinning
 
-In this tutorial, we bring down the time to run Stable Diffusion to ~1.5s/imag
+In this tutorial, we bring down the time to run Stable Diffusion to ~1.5s/image
  (without complation) by pinning the model to GPU memory using Runhouse.
 
 To run this tutorial from your laptop:
@@ -110,9 +111,14 @@ To run this tutorial from your laptop:
 python p02_faster_sd_generate.py
 ```
 
-Here, we use  `rh.pin_to_memory` and `rh.get_pinned_object(mode_id)` to pin or
+> **Note**:
+The first time this is run, the model is not yet in memory, so you will not
+observe the speedup. It is pinned to memory in this run, so future runs will
+be faster.
+
+Here, we use  `rh.pin_to_memory` and `rh.get_pinned_object(model_id)` to pin or
 retrieve a Stable Diffusion model from GPU memory. The following function will
-a Stable Diffusion model that has been pinned to GPU memory to generate the
+reuse a Stable Diffusion model that has been pinned to GPU memory to generate the
 images, or it will download and pin it to memory if it does not yet exist.
 
 ```python
@@ -120,18 +126,20 @@ def sd_generate_pinned(prompt, num_images=1, steps=100, guidance_scale=7.5,
                        model_id='stabilityai/stable-diffusion-2-base',
                        dtype=torch.float16, revision="fp16"):
     pipe = rh.get_pinned_object(model_id)
+
+    # pin to memory if it is not in memory yet
     if pipe is None:
         pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype, revision=revision).to("cuda")
         pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
         rh.pin_to_memory(model_id, pipe)
+    
     return pipe(prompt, num_images_per_prompt=num_images,
                 num_inference_steps=steps, guidance_scale=guidance_scale).images
 ```
 
 Similar to the above tutorial, we instantiate our cluster, send the function to
-be run on the cluster, and retrieve the generated images locally. The first run
-will download and pin the Stable Diffusion model, and following runs will reuse
-the model, making them much faster.
+be run on the cluster, and retrieve the generated images locally. Recall that the first run will download and pin the Stable Diffusion model, and following
+runs reuse the model, making them much faster.
 
 ```python
 # For GCP and Azure
@@ -145,24 +153,20 @@ images = generate_gpu(my_prompt, num_images=4, steps=50)
 [image.show() for image in images]
 ```
 
-Status: **Working.** 
-
 ## 03 FLAN-T5 Stable Diffusion
 
-Generating prompts is tiring, so let's use FLAN-T5 to do it for us. We'll send a
-FLAN-T5 inference function to our GPU, and then pipe the outputs into our Stable 
-Diffusion service.
-
-This tutorial also demonstrates how one can go about reusing a cluster and
-pipelining sends.
+Generating prompts is tiring, so let's use FLAN-T5, a text-to-text generation
+model, to do it for us. We'll send a FLAN-T5 inference function to our GPU, and
+then pipe the outputs into our Stable Diffusion service. In this process, we
+also show how one can go about reusing a cluster and pipelining sends.
 
 To run this tutorial from your laptop:
 ```commandline
 python p03_flan_t5_xl_generate.py
 ```
 
-The following function generates a prompt from an input prompt, using the
-FLAN-T5 model, and using model pinning according to the tutorial above.
+The following function generates a prompt from an initial prompt using the
+FLAN-T5 model, and performs model pinning according to the tutorial above.
 
 ```python
 def causal_lm_generate(prompt, model_id='google/flan-t5-xl', **model_kwargs):
@@ -206,8 +210,6 @@ generate_gpu = rh.send(name='sd_generate')
 images = generate_gpu(sequences, num_images=1, steps=50)
 [image.show() for image in images]
 ```
-
-Status: **Working.** 
 
 # Appendix
 

@@ -4,7 +4,8 @@ We want Runhouse to be aggressively zero-lift. Whatever code
 structure, whatever execution environment (notebook, 
 orchestrator, data app, CI/CD), you should be able to do something fun
 and interesting with Runhouse in minutes, not months. This tutorial
-shows how you can use Runhouse to fine-tune Stable Diffusion using
+shows how you can easily import and reuse GitHub code using Runhouse.
+In just a few lines of code, we can fine-tune Stable Diffusion using
 Dreambooth, perform inference, and even integrate a Gradio app.
 
 ## Table of Contents
@@ -16,7 +17,7 @@ Dreambooth, perform inference, and even integrate a Gradio app.
 ## 01 Dreambooth Fine-Tuning and Inference
 
 Dreambooth is a popular app that lets you fine-tune Stable Diffusion on your
-own images so you can reference your new concept in Stable Diffusion inferences.
+own images so you can personalize your Stable Diffusion inferences.
 Hugging Face published a [great tutorial](https://huggingface.co/blog/dreambooth),
 but it's never easy to set up on your own hardware, so various Colabs are circulating
 to help people get started. We can run way faster on our own GPU, and we don't even 
@@ -25,7 +26,7 @@ hardware from just a GitHub URL pointing to the function.
 
 It also shows you basics of the data side of Runhouse, by:
 1) Creating an `rh.folder` with the training images and then sending it to the
-cluster with `folder.to(my_gpu)`. 
+cluster using `folder.to(my_gpu)`. 
 2) Similarly, sending the folder containing the trained model to blob storage.
 
 This is the tip of the iceberg, and there's much more about data on the way, so
@@ -35,7 +36,7 @@ let's get started!
 [//]: # (TODO add hardware instructions)
 
 We present a rough walk through of the code below.
-To run this tutorial, please run locally from your laptop:
+To run the full tutorial, please run locally from your laptop:
 ```commandline
 python p01_dreambooth_train.py
 python p01a_dreambooth_predict.py
@@ -71,11 +72,14 @@ training_function_gpu = rh.send(
     name='train_dreambooth')
 ```
 
-Similarly, for creating training args using a the same GitHub file:
+Similarly, for creating training args using the `parse_args` function from the
+same GitHub file:
 ```python
 create_train_args = rh.send(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
-    hardware=gpu, reqs=[])
+    hardware=gpu,
+    reqs=[]
+)
 train_args = create_train_args(
     input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
                 '--instance_data_dir', remote_image_dir,
@@ -131,11 +135,12 @@ running the gradio function on the cluster.
 ```python
 gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # GCP and Azure
 # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # AWS
-my_space = rh.send(fn=launch_gradio_space, hardware=gpu,
-                   reqs=['./', 'gradio', 'fairscale', 'ftfy',
-                         'huggingface-hub', 'Pillow', 'timm',
-                         'open_clip_torch', 'clip-interrogator==0.3.1',
-                        ])
+my_space = rh.send(
+    fn=launch_gradio_space,
+    hardware=gpu,
+    reqs=['./', 'gradio', 'fairscale', 'ftfy','huggingface-hub', 'Pillow', 
+          'timm', 'open_clip_torch', 'clip-interrogator==0.3.1',]
+    )
 ```
 
 We can tunnel the remote Gradio space to be accessed locally using
@@ -160,8 +165,6 @@ The first time you use the Gradio space, the model needs to download, which can
 take ~10 minutes.
 
 
-Status: **Working.**
-
 # Appendix
 
 ## Dreambooth in Colab
@@ -170,5 +173,3 @@ If you prefer to read or run this tutorial in Colab, you can do so
 [here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t02_Dreambooth/x01_Colab_Dreambooth.ipynb).
 See the [Getting Started Section](../00_Getting_Started/README.md) for more details
 about logging in and running in notebooks.
-
-Status: **Working.**
