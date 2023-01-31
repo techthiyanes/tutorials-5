@@ -78,6 +78,8 @@ images = generate_gpu(rh_prompt, num_images=4, steps=50)
 [image.show() for image in images]
 ```
 
+![](assets/p01_output.png)
+
 Runhouse allows you to save and reuse functions, to make your work accessible
 from anywhere. As we'll reuse this function in the next tutorial, let's save
 and name it `sd_generate`. If you've created an account and logged in, it will
@@ -153,6 +155,8 @@ images = generate_gpu(my_prompt, num_images=4, steps=50)
 [image.show() for image in images]
 ```
 
+![](assets/p02_output.png)
+
 ## 03 FLAN-T5 Stable Diffusion
 
 Generating prompts is tiring, so let's use FLAN-T5, a text-to-text generation
@@ -197,8 +201,19 @@ flan_t5_generate = rh.send(fn=causal_lm_generate,
 my_prompt = "A detailed oil painting of"
 sequences = flan_t5_generate(my_prompt, max_new_tokens=100, min_length=20, temperature=2.0, repetition_penalty=3.0,
                                 use_cache=False, do_sample=True, num_beams=3, num_return_sequences=4)
+                                
+sequences = [f"{my_prompt} {seq}" for seq in sequences]
 for seq in sequences:
     print(seq)
+```
+
+Ouptut:
+```
+A detailed oil painting of a portrait of artist on the cover of Art magazine in 1892. Oil on canvas 24"x 30". Signed lower right.
+A detailed oil painting of tulips and other flowers that bloom in late summer or early fall, on a green background. 
+A detailed oil paint of an autumn leaf petal with a lotus flower floating on it.
+A detailed oil painting of a young woman and her two girls sitting near the window of a restaurant during their last lunch together, drinking coffee from a saucer.
+A detailed oil painting of a horse standing next to a lake with grassy hillside in blue sky. There is an autumnal-toned brown background, but this piece could be put on any wall of a room and looks equally at home in the living room as well as bedroom.
 ```
 
 We can reload the function we created in the previous tutorial because we named it and called save().
@@ -210,6 +225,7 @@ generate_gpu = rh.send(name='sd_generate')
 images = generate_gpu(sequences, num_images=1, steps=50)
 [image.show() for image in images]
 ```
+![](assets/p03_output.png)
 
 # Appendix
 

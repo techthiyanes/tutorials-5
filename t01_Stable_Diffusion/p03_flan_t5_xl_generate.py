@@ -26,12 +26,11 @@ if __name__ == "__main__":
     my_prompt = "A detailed oil painting of"
     sequences = flan_t5_generate(my_prompt, max_new_tokens=100, min_length=20, temperature=2.0, repetition_penalty=3.0,
                                  use_cache=False, do_sample=True, num_beams=3, num_return_sequences=4)
+
+    sequences = [f"{my_prompt} {seq}" for seq in sequences]
     for seq in sequences:
         print(seq)
 
-    # We can reload the function we created in the previous tutorial because we named it and called save().
-    # If you logged into Runhouse, it was saved on our Resource Naming Server. If you didn't, it saved in
-    # the rh/ directory of the top-level git directory.
     generate_gpu = rh.send(name='sd_generate')
     images = generate_gpu(sequences, num_images=1, steps=50)
     [image.show() for image in images]
