@@ -9,9 +9,7 @@ def sd_generate(prompt, num_images=1, steps=100, guidance_scale=7.5, model_id='s
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1') # GCP and Azure
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws') # AWS
-    
+    gpu = rh.cluster(name='rh-a10x').up_if_not()
     generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./', 'tensorboard'])
 
     rh_prompt = 'A digital illustration of a woman running on the roof of a house.'

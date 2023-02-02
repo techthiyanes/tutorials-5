@@ -1,5 +1,5 @@
 # Before running this script, be sure to install the latest version of Runhouse:
-# pip install git+https://github.com/run-house/runhouse.git@latest_patch
+# pip install runhouse
 
 import runhouse as rh
 import sky

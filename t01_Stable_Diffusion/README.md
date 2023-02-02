@@ -36,11 +36,16 @@ python p01_sd_generate.py
 First, we instantiate a cluster called `rh-a10x`, based on your cloud credentials. 
 
 ```python
-# For GCP or Azure
-gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')
+# For GCP, Azure, or Lambda Labs
+rh.cluster(name='rh-a10x', instance_type='A100:1').save()
 
 # For AWS (single A100s not available, base A10G may have insufficient CPU RAM)
-gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')
+rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').save()
+
+# To use our own GPU (or from a different provider, e.g. Paperspace, Coreweave)
+rh.cluster(ips=['216.153.52.103'], 
+           ssh_creds={'ssh_user': '...', 'ssh_private_key':'<path_to_key>'},
+           name='rh-a10x').save()
 ```
 
 Next, we define the function that we would like to be able to run on the

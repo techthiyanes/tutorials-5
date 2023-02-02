@@ -49,9 +49,7 @@ def get_optimizer(model, lr):
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
-
+    gpu = rh.cluster(name='rh-a10x').up_if_not()
     preprocessed_yelp = rh.table(name="preprocessed-tokenized-dataset")
 
     ft_model = rh.send(fn=fine_tune_model,

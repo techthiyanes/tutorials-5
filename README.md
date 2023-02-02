@@ -39,7 +39,7 @@ See [getting started](https://github.com/run-house/runhouse#-getting-started).
 
 tldr;
 ```commandline
-pip install git+https://github.com/run-house/runhouse.git@latest_patch
+pip install runhouse
 sky check
 # Optionally, for portability (e.g. Colab):
 runhouse login
@@ -62,12 +62,13 @@ We think they're the easiest way anywhere to run dreambooth on your own cloud GP
 
 Runhouse is heavily under development and unstable. We are quite 
 a ways away from having our first stable release. We are sharing
-it privately with a few select people to collect feedback, and
+it with a few select people to collect feedback, and
 expect a lot of things to break off the bat.
 
 ## 🙋‍♂️ Getting Help
 
-Please join our [discord server here](https://discord.gg/RnhB6589Hs), or email us, or create an issue.
+Please join our [discord server here](https://discord.gg/RnhB6589Hs) 
+to message us, or email us (donny at run.house or josh at run.house), or create an issue.
 
 ## 🕵️‍♀️ Where is the compute?
 

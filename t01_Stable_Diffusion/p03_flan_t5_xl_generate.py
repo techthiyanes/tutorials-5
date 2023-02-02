@@ -13,9 +13,7 @@ def causal_lm_generate(prompt, model_id='google/flan-t5-xl', **model_kwargs):
     return tokenizer.batch_decode(outputs, skip_special_tokens=True)
 
 if __name__ == "__main__":
-    # gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
-    gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
-
+    gpu = rh.cluster(name='rh-a10x').up_if_not()
     flan_t5_generate = rh.send(fn=causal_lm_generate,
                                hardware=gpu,
                                reqs=['./'],

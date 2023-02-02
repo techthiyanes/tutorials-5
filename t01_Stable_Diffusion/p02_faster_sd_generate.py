@@ -16,9 +16,7 @@ def sd_generate_pinned(prompt, num_images=1, steps=100, guidance_scale=7.5,
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
-    
+    gpu = rh.cluster(name='rh-a10x').up_if_not()
     generate_gpu = rh.send(fn=sd_generate_pinned, hardware=gpu, name='sd_generate').save()
     my_prompt = 'A hot dog made of matcha powder.'
     images = generate_gpu(my_prompt, num_images=4, steps=50)

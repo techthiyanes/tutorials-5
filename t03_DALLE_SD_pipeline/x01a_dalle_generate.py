@@ -15,9 +15,7 @@ def unclip_generate(prompt,
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # On GCP and Azure
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
-
+    gpu = rh.cluster(name='rh-a10x').up_if_not()
     generate_karlo_gpu = rh.send(fn=unclip_generate, hardware=gpu, name='karlo_generate').save()
 
     # The first time we run this it will take ~8 minutes to download the model, which is pretty large.
