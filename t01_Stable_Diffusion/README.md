@@ -83,7 +83,7 @@ images = generate_gpu(rh_prompt, num_images=4, steps=50)
 [image.show() for image in images]
 ```
 
-![](assets/p01_output.png)
+![](../assets/t01/p01_output.png)
 
 Runhouse allows you to save and reuse functions, to make your work accessible
 from anywhere. As we'll reuse this function in the next tutorial, let's save
@@ -160,7 +160,7 @@ images = generate_gpu(my_prompt, num_images=4, steps=50)
 [image.show() for image in images]
 ```
 
-![](assets/p02_output.png)
+![](../assets/t01/p02_output.png)
 
 ## 03 FLAN-T5 Stable Diffusion
 
@@ -230,7 +230,7 @@ generate_gpu = rh.send(name='sd_generate')
 images = generate_gpu(sequences, num_images=1, steps=50)
 [image.show() for image in images]
 ```
-![](assets/p03_output.png)
+![](../assets/t01/p03_output.png)
 
 # Appendix
 

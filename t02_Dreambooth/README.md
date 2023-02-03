@@ -32,9 +32,6 @@ cluster using `folder.to(my_gpu)`.
 This is the tip of the iceberg, and there's much more about data on the way, so
 let's get started!
 
-[//]: # (TODO Note colab and run instructions &#40;e.g. num images&#41; )
-[//]: # (TODO add hardware instructions)
-
 We present a rough walk through of the code below.
 To run the full tutorial, please run locally from your laptop:
 ```commandline
@@ -46,11 +43,13 @@ Let's instantiate a cluster and send our local folder of training images to the
 cluster. We create an `rh.folder` object that we move to the cluster, using
 `folder.to(gpu)`.
 
-```python
-gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # GCP and Azure
-# gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # AWS
+We have provided some sample photos of Poppy, the company dog, in our assets folder,
+or feel free to upload your own images to the folder to personalize the experience!
 
-input_images_dir = str(Path.home() / 'dreambooth/images')
+```python
+gpu = rh.cluster(name='rh-a10x')
+
+input_images_dir = 'assets/t02/images'
 remote_image_dir = 'dreambooth/instance_images'
 rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
 ```
@@ -83,7 +82,7 @@ create_train_args = rh.send(
 train_args = create_train_args(
     input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
                 '--instance_data_dir', remote_image_dir,
-                '--instance_prompt', f'a photo of sks person']
+                '--instance_prompt', f'a photo of sks dog']
     )
 ```
 
@@ -101,7 +100,7 @@ prompt, model path, and any additional Stable Diffusion params to get results!
 
 ```python
 generate_dreambooth = rh.send(fn=sd_generate_pinned, hardware=gpu)
-my_prompt = "sks person riding a goat through a field of purple flowers"
+my_prompt = "sks dog in a field of purple flowers"
 model_path = 'dreambooth/output'
 images = generate_dreambooth(my_prompt,
                              model_id=model_path,
@@ -109,6 +108,8 @@ images = generate_dreambooth(my_prompt,
                              steps=100)
 [image.show() for image in images]
 ```
+
+![](../assets/t02/p01a_output.png)
 
 ## 02 CLIP Interrogator
 ```commandline
@@ -133,8 +134,7 @@ As in previous tutorials, instantiate a cluster and create a Runhouse callable f
 running the gradio function on the cluster.
 
 ```python
-gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')  # GCP and Azure
-# gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # AWS
+gpu = rh.cluster(name='rh-a10x')
 my_space = rh.send(
     fn=launch_gradio_space,
     hardware=gpu,

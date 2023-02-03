@@ -69,3 +69,5 @@ my_prompt = 'portrait of Harrison Ford eating a luscious Christmas ham'
 rh_logo_sd_images = dalle2sd_pipeline(my_prompt, num_dalle_images=2, num_sd_images=2)
 [image.show() for image in rh_logo_sd_images]
 ```
+
+![](../assets/t03/p02_output.png)

@@ -3,15 +3,15 @@ import runhouse as rh
 # Based on https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py
 
 if __name__ == "__main__":
-    # Need about 20 photos of the subject, and the closer they can be to 512x512 the better
-    input_images_dir = 'dreambooth/images'
-    class_name = 'person'
+    input_images_dir = 'assets/t02/images'
+    class_name = 'dog'
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
     gpu.up_if_not()
     gpu.install_packages([rh.GitPackage(git_url='https://github.com/huggingface/diffusers.git',
                                         install_method='pip', revision='v0.11.1'),
-                          'datasets', 'accelerate', 'transformers',
-                          'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'])
+                          'datasets', 'accelerate', 'transformers', 'bitsandbytes',
+                          'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
+                          'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'])
 
     rh.folder(url=input_images_dir).to(fs=gpu, url='dreambooth/instance_images')
 
