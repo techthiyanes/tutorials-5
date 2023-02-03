@@ -5,7 +5,7 @@ import runhouse as rh
 # Based on https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py
 
 def train_dreambooth(input_images_dir, class_name='person'):
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
     training_function_gpu = rh.send(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:main',
         hardware=gpu,

@@ -7,3 +7,4 @@ datasets
 tqdm
 accelerate
 diffusers
+tensorboard

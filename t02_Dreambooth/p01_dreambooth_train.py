@@ -6,7 +6,8 @@ if __name__ == "__main__":
     # Need about 20 photos of the subject, and the closer they can be to 512x512 the better
     input_images_dir = 'dreambooth/images'
     class_name = 'person'
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
+    gpu.up_if_not()
     gpu.install_packages([rh.GitPackage(git_url='https://github.com/huggingface/diffusers.git',
                                         install_method='pip', revision='v0.11.1'),
                           'datasets', 'accelerate', 'transformers',

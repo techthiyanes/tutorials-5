@@ -1,21 +1,8 @@
-<h1 align="center">🏃‍♀️Runhouse 🏠 Tutorials</h1>
+<h1 align="center">🏃‍♀️Runhouse 🏠 <br> Walkthrough</h1>
 
-
-**tldr;** PyTorch lets you send your model or tensor `.to('cuda')`, so 
-why can't you do `my_fn.to('a_gcp_a100')` or `my_table.to('parquet_in_s3')`? 
-Runhouse allows just that: send code and data to any compute or 
-data infra, all in Python and inside your own cloud accounts, and continue to use them eagerly as they were. 
-Take a look at this [Stable Diffusion example](t01_Stable_Diffusion/p01_sd_generate.py) - 
-Runhouse lets you start sending Stable Diffusion inferences to your cloud GPU instantly,
-and there's no magic yaml, DSL, or "submitting for execution." 
-Because it's not stateless like most serverless compute, we can pin the model to GPU memory 
-([tutorial 1-01a](t01_Stable_Diffusion/p02_faster_sd_generate.py)), and get super fast inference 
-(~1.5s/image for SD-2 on an A100 before any compilation!). There's much more, like being able to access your 
-code, compute, and data from anywhere with a Python interpreter and an internet connection, 
-or sharing them with collaborators, so let's jump in.
 
 These tutorials introduce you to 
-the tools and usage patterns of Runhouse. We've devised them
+the tools and usage patterns of [Runhouse](https://github.com/run-house/runhouse). We've devised them
 to chart a fun path through our features, but you're 
 welcome to hop around if you prefer.
 

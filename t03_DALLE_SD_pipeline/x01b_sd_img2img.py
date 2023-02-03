@@ -24,7 +24,7 @@ def sd_img2img_generate(prompt, base_images, num_images=1,
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
     sd_img2img_generate_gpu = rh.send(fn=sd_img2img_generate, hardware=gpu, name='sd_img2img_generate').save()
 
     rh_prompt = 'A picture of a woman running above a picture of a house.'

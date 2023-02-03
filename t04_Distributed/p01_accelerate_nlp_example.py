@@ -6,7 +6,7 @@ import runhouse as rh
 # Here we simply demonstrate how to use Runhouse to run existing code from Github.
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
     train_gpu = rh.send(fn='https://github.com/huggingface/accelerate/blob/v0.15.0/examples/nlp_example.py:training_function',
                         hardware=gpu,
                         reqs=['pip:./accelerate', 'transformers', 'datasets', 'evaluate',

@@ -19,7 +19,7 @@ def dm_generate(prompt, num_images_sqrt=1, supercondition_factor=32, is_mega=Tru
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
     generate_dm_gpu = rh.send(fn=dm_generate, hardware=gpu, reqs=['./', 'min-dalle'], name='dm_generate').save()
 
     my_prompt = 'A hot dog made of matcha powder.'

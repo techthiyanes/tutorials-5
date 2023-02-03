@@ -9,8 +9,8 @@ def sd_generate(prompt, num_images=1, steps=100, guidance_scale=7.5, model_id='s
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
-    generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./', 'tensorboard'])
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
+    generate_gpu = rh.send(fn=sd_generate).to(gpu, reqs=['./'])
 
     rh_prompt = 'A digital illustration of a woman running on the roof of a house.'
     images = generate_gpu(rh_prompt, num_images=4, steps=50)

@@ -7,10 +7,10 @@ def launch_gradio_space(name):
 # Based on https://huggingface.co/spaces/pharma/CLIP-Interrogator/
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
-    my_space = rh.send(fn=launch_gradio_space, hardware=gpu,
-                       reqs=['./', 'gradio', 'fairscale', 'ftfy', 'huggingface-hub',
-                             'Pillow', 'timm', 'open_clip_torch', 'clip-interrogator==0.3.1'])
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
+    my_space = rh.send(fn=launch_gradio_space).to(gpu, reqs=['./', 'gradio', 'fairscale', 'ftfy',
+                                                             'huggingface-hub', 'Pillow', 'timm',
+                                                             'open_clip_torch', 'clip-interrogator==0.3.1'])
     gpu.ssh_tunnel(local_port=7860, remote_port=7860)
     gpu.keep_warm()
     run_key = None
