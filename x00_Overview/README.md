@@ -6,13 +6,19 @@ you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.
 
 ## Table of Contents
 1. 🏙 [High-level Architecture](#01-high-level-architecture)
-1. Sends and Clusters 
-   2. ssh / debugging
+1. Compute: Sends, Clusters, and Packages 
+   1. Clusters, ssh / debugging
+   2. Sends
    3. Runhouse in Notebooks
-1. Folders, Blobs, and Tables
-2. 2. Logging in and setting configurations
+   4. Packages
+1. Data: Folders, Blobs, and Tables
+   2. Logging in and setting configurations
    1. Getting set up on cloud providers / GPU quota
-1. Saving and loading resources
+1. Accessibility: Accessing resources across environments and users
+   1. The RNS: Saving and loading resources
+   2. Secrets and Configs
+2. Management: Sharing resources as living assets
+   1. Management UI
 
 ## 01 🏙 High-level Architecture
 
