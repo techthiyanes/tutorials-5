@@ -6,6 +6,7 @@ demonstrates an easy and inexpensive way to quickly get started with
 running Stable Diffusion.
 
 ## Table of Contents
+- [Hardware Setup](#hardware-setup)] 
 - [Stable Diffusion on a Cloud GPU in 5 lines of code](#01-stable-diffusion-on-a-cloud-gpu-in-5-lines-of-code)
 - [Fast Stable Diffusion with Model Pinning](#02-fast-stable-diffusion-with-model-pinning)
 - [FLAN-T5 Stable Diffusion](#03-flan-t5-stable-diffusion)
@@ -13,9 +14,32 @@ running Stable Diffusion.
     - [Running in Colab](#running-in-colab)
 
 
-## 01 Stable Diffusion on a Cloud GPU in 5 lines of code
+## 00: Hardware Setup
+These tutorials are designed to use an Ampere-based GPU such as an A100. If you have
+GCP, Azure, or Lambda Labs enabled (run `sky check` to see if you do), you can proceed as-is. 
+If you have AWS credentials, you'll need to use an A10G as AWS doesn't have single 
+A100s available. To do this, all you need to do is run the following in a python interpreter 
+once (just once ever, not once per tutorial) before running the tutorials:
+```python
+rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').save()
+```
+To bring your own GPU (e.g. if you have a Paperspace or Coreweave account), you can run:
+```python
+rh.cluster(ips=['<ip of the cluster>'], 
+           ssh_creds={'ssh_user': '...', 'ssh_private_key':'<path_to_key>'},
+           name='rh-a10x').save()
+```
+And if you ran either of the above and would like to switch back to the original A100 for GCP, Azure, or Lambda:
+```python
+# For GCP, Azure, or Lambda Labs
+rh.cluster(name='rh-a10x', instance_type='A100:1').save()
+```
+If you'd like to run these tutorials on a different kind of GPU, make sure to change the torch version appropriately
+in the `requirements.txt` file of this repo (e.g. for a V100, remove the 
+"--extra-index-url https://download.pytorch.org/whl/cu117" line). In many tutorials, those requirements will be 
+installed on your cluster when you setup a send.
 
-[//]: # (TODO add hardware instructions)
+## 01 Stable Diffusion on a Cloud GPU in 5 lines of code
 
 Running Stable Diffusion from your laptop is hard, and waiting for queues or 
 free-tier hardware can be a drag. We'll use Runhouse to experiment with Stable 
@@ -37,15 +61,15 @@ First, we instantiate a cluster called `rh-a10x`, based on your cloud credential
 
 ```python
 # For GCP, Azure, or Lambda Labs
-rh.cluster(name='rh-a10x', instance_type='A100:1').save()
+gpu = rh.cluster(name='rh-a10x', instance_type='A100:1').save()
 
 # For AWS (single A100s not available, base A10G may have insufficient CPU RAM)
-rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').save()
+gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').save()
 
 # To use our own GPU (or from a different provider, e.g. Paperspace, Coreweave)
-rh.cluster(ips=['216.153.52.103'], 
-           ssh_creds={'ssh_user': '...', 'ssh_private_key':'<path_to_key>'},
-           name='rh-a10x').save()
+gpu = rh.cluster(ips=['<cluster ip>'], 
+                 ssh_creds={'ssh_user': '...', 'ssh_private_key':'<path_to_key>'},
+                 name='rh-a10x').save()
 ```
 
 Next, we define the function that we would like to be able to run on the
