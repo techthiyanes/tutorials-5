@@ -6,19 +6,15 @@ you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.
 
 ## Table of Contents
 1. 🏙 [High-level Architecture](#01-high-level-architecture)
-1. Compute: Sends, Clusters, and Packages 
+1. 🖥 Compute: Sends, Clusters, and Packages 
    1. Clusters, ssh / debugging
    2. Sends
    3. Runhouse in Notebooks
-   4. Packages
-1. Data: Folders, Blobs, and Tables
-   2. Logging in and setting configurations
-   1. Getting set up on cloud providers / GPU quota
-1. Accessibility: Accessing resources across environments and users
-   1. The RNS: Saving and loading resources
-   2. Secrets and Configs
-2. Management: Sharing resources as living assets
-   1. Management UI
+1. 📂 Data: Folders, Blobs, and Tables
+1. ☁️ Accessibility: Accessing resources across environments and users
+   1. Saving and loading resources in the RNS
+   2. Secrets, logging in, and setting defaults
+1. 📋Management UI
 
 ## 01 🏙 High-level Architecture
 
@@ -168,6 +164,30 @@ gpu.ssh_tunnel(local_port=7860, remote_port=7860)
 
 ### 02: 🏹 Sends
 
+Runhouse allows you to send code a cluster, but still interact with it
+as a native runnable object (see [tutorial 01](../t01_Stable_Diffusion/p01_sd_generate.py)).
+When you do this, the following steps occur:
+1) We check if the cluster is up, and bring up the cluster if not (only possible for autoscaled SkyClusters)
+2) We check that the cluster's gRPC server has started to handle requests to do things like 
+install packages, run modules, get previously executed results, etc. If it hasn't, we install
+Runhouse on the cluster and start the gRPC server. The gRPC server inits Ray.
+3) We collect the dependencies from the `reqs` parameter and install them on the cluster via
+`cluster.install_packages()`. By default, we'll sync over the working git repo and install its
+requirements.txt if it has one.
+
+When you run your sent module, we send a gRPC request to the cluster with the
+module name and function entrypoint to run. The gRPC server adds the module to its python path, 
+imports the module, grabs the function entrypoint, runs it, and returns your results.
+
+You can stream in logs from the cluster as your module runs by passing 
+`stream_logs=True` into your call line:
+```python
+images = generate_gpu('A dog.', num_images=1, steps=50, stream_logs=True)
+```
+
+We plan to support additional form factors for modules beyond "remote Python function" shortly, 
+including HTTP endpoints, custom ASGIs, and more.
+
 **Advanced Send usage**
 
 There are a number of ways to call a Send beyond just `__call__`.
@@ -202,22 +222,19 @@ argument as a single value, since it's the same for all three prompts.
 
 ### 03: 📓 Runhouse in Notebooks
 
-It is easier to run in Colab if you create a Runhouse account so you can store your secrets
-in Vault and load them into Colab with `rh.login()` (though not required, you can still drop them
-into the Colab environment manually). See [Appendix 02](#02-saving-and-loading-secrets-from-vault) for more details.
-
-**Note, if you simply prefer to work in notebooks but don't need a hosted notebook specifically,** 
-you can simply call the following to tunnel a JupyterLab server into your local 
-browser from your Runhouse cluster or send:
+If you prefer to work or debug in notebooks, you can call the following to tunnel a JupyterLab server into 
+your local browser from your Runhouse cluster or send:
 ```commandline
 runhouse notebook my_cluster
 ```
 or in python:
 ```python
-my_send.notebook()
-# or
 my_cluster.notebook()
 ```
+
+If you'd like to use a hosted notebook service like Colab, you'll benefit a lot from creating a Runhouse account
+to store your secrets and loading them into Colab with `rh.login()`. This is not required, and you can still drop them
+into the Colab VM manually.
 
 #### Notes on notebooks
 
@@ -248,28 +265,98 @@ rh.folder(url='remote_directory', fs=rh.cluster('my_cluster').to('here', url='lo
 ## 04: Accessibility, Portability, and Sharing
 
 ### 01: The Resource Name System (RNS)
-(WIP)
+Cloud resources are already inherently portable, so making them accessible 
+across environments and users in Google-Docs-like manner only requires a bit of
+metadata and snappy resource APIs. For example, if you wanted all of your collaborators
+to share a "data space" where you could reference files in blob storage by name (instead of
+passing around lots of urls), you could stand up a key-value store mapping name to URL and 
+an API to resolve the names. Now imagine you wanted to do this for tabular data, folders, and 
+code packages, compute instances, and services too, so you came up with a way of putting them 
+into the KV store too. And now for each of the above, you and your collaborators might
+have a number of providers underneath the resource (e.g. Parquet in S3, DataBricks, Snowflake, etc.),
+and perhaps a number of variants (e.g. Pandas, Hugging Face, Dask, RAPIDS, etc.), so you create a unified
+front-end into like resources and a dispatch system to make sure resources load properly based on
+the various metadata morphologies. Finally, you have lots of collaborators and resources
+and don't just want a single massive global list of name strings, so you allow folder hierarchies. 
+There you go, you've built the Runhouse RNS.
+
+We support saving resource metadata to the `/rh` directory of the working git package
+or a remote metadata service we call the Runhouse RNS API. Both have their advantages:
+1. "Local RNS" - The git-based approach allows you to publish the exact resource metadata in the same 
+version tree as your code, so you can be sure that the code and resources are always 1-for-1 compatible.
+It also is a highly visible way to distribute the resources to interested OSS users, who can see it
+right in the repo, rather than having to be aware that it exists behind an API. Imagine you publish
+some research, and the exact cloud configurations and data artifacts you used were published with it
+so consumers of the work don't need to reverse engineer your compute and data rig.
+2. "Runhouse RNS" - The RNS API allows your resources to be accessible anywhere with an internet connection and 
+python interpreter, so it's obviously way more portable. It also allows you to quickly share resources with 
+collaborators without needing to check them into git and ask them to fetch and change their branch. The 
+web-based approach also allows you to keep a global source of truth for a resource (e.g. a single BERT 
+preprocessing service shared by a team, or a most up to date model checkpoint), which will be updated
+with zero downtime by all consumers when you push a new version. Lastly, the RNS API is backed by a 
+management API to view and manage all resources.
+
+Not every resource in Runhouse is named. You can use the Runhouse APIs if you like the ergonomics 
+without ever naming anything. Anonymous resources are simply never written to a metadata store. 
+
+Every named resource has a name and "full name" at `resource.rns_address`, which is organized into hierarchical folders.
+When you create a resource, you can `name=` it with just a name (we will resolve it as being in the 
+`rh.current_folder()`) or the full address. Resources in the local RNS begin with the `~` folder. 
+Resources built-into the Runhouse Python package begin with `^` (like a house). All other addresses are 
+in the Runhouse RNS. By default, the only top-level folders in the Runhouse RNS you have permission to write 
+to are your username and any organizations you are in. The `@` alises to your username 
+(e.g. `myresource.save(name='@/myresource')`).
+
+To persist a resource, call: 
+```python
+resource.save()
+resource.save(name='new_name')  # Saves to rh.current_folder()
+resource.save(name='@/my_full/new_name')  # Saves to Runhouse RNS
+resource.save(name='~/my_full/new_name')  # Saves to Local RNS
+```
+
+To load a resource, call `rh.load('my_name')`, or just call the resource
+factory constructor with only the name, e.g.
+```
+rh.send(name='my_send')
+rh.cluster(name='~/my_name')
+rh.table(name='@/my_datasets/my_table')
+```
+You may need to pass the full rns_address if the resource is not in `rh.current_folder()`. To check
+if a resource exists, you can call:
+```
+rh.exists(name='my_send')
+rh.exists(name='~/local_resource')
+rh.exists(name='@/my/rns_path/to/my_table')
+```
+
+We're still early in uncovering the patterns and antipatterns for a global shared environment for compute and 
+data resources (shocker), but for now we generally encourage  
 
 ### 02: Secrets and Logging in
 
-```python
-import runhouse as rh
-import sky
-```
-
-**Logging In**
-In order to use Runhouse across environments, such as reusing a service from inside a Colab
-or loading secrets or configs into a remote environment, you'll need to create an account and log in.
-You don't need to create an account or log in if you only plan to use Runhouse's APIs in a single
+Using Runhouse across environments, such as reusing a service from inside a Colab
+or loading secrets or configs into a remote environment, is much easier if you create a Runhouse account.
+You don't need to do this if you only plan to use Runhouse's APIs in a single
 environment, and don't plan to share resources with others.
 
-Run this code wherever your cloud credentials are already saved, such as your laptop.
-Follow the prompts to log in. If this is your first time logging in, you should probably upload your secrets,
-but none of the other prompts will have any effect.
-rh.login(upload_secrets=True, interactive=True)
+Logging in simply saves your token to `~/.rh/config.yaml`, and offers to download or upload your
+secrets or defaults (e.g. default provider, autostop, etc.). We don't have a "logout" today, but will
+shortly. To log out, simply delete your `~/.rh/config.yaml` and any secrets you don't want in the 
+environment. You can confirm you are logged out by saving a resource, and observe that it's writted
+to the `/rh` directory of your git working directory rather than the RNS API.
 
-You can do this interactively by running the following in your command line:
-`runhouse login`
+To log in, run the following wherever your cloud credentials are already saved, such as your laptop.
+Follow the prompts to log in. If this is your first time logging in, you should probably upload your secrets,
+and none of the other prompts will have any real effect (you probably haven't set any defaults yet).
+```commandline
+runhouse login
+```
+
+Or in Python (e.g. in a notebook)
+```python
+rh.login(interactive=True)
+```
 
 **Setting Config Options**
 Runhouse stores user configs both locally in `~/.rh/config.yaml` and remotely in the Runhouse database.
@@ -297,7 +384,7 @@ Now that you've changed some configs, you probably want to save them to Runhouse
 
 **Viewing RPC logs**
 
-We will provide more instruction about log persistence and steaming shortly, but in the meantime, if you need to see the
+We will provide more instruction about log persistence and streaming shortly, but in the meantime, if you need to see the
 logs for the sends on a particular cluster, you can ssh into the cluster with `ssh <cluster name>` and
 'screen -r' (*and use `control A+D` to exit. If you control-C you will stop the server*).
 The server runs inside that screen instance, so logs are written to there.
