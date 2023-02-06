@@ -331,7 +331,8 @@ rh.exists(name='@/my/rns_path/to/my_table')
 ```
 
 We're still early in uncovering the patterns and antipatterns for a global shared environment for compute and 
-data resources (shocker), but for now we generally encourage  
+data resources (shocker), but for now we generally encourage OSS projects to publish resources in the
+local RNS of their package, and individuals and teams to largely rely on Runhouse RNS.
 
 ### 02: Secrets and Logging in
 
