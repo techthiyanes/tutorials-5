@@ -5,16 +5,16 @@ overview of Runhouse and the APIs. If you're just looking to get started,
 you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.md).
 
 ## Table of Contents
-1. 🏙 [High-level Architecture](#01-high-level-architecture)
-1. 🖥 Compute: Sends, Clusters, and Packages 
+1. 🏙 [High-level Architecture](#01--high-level-architecture)
+1. 🖥 [Compute: Sends, Clusters, and Packages](#02--compute-sends-clusters-and-packages) 
    1. Clusters, ssh / debugging
    2. Sends
    3. Runhouse in Notebooks
-1. 📂 Data: Folders, Blobs, and Tables
-1. ☁️ Accessibility: Accessing resources across environments and users
+1. 📂 [Data: Folders, Blobs, and Tables](#03--data-folders-tables-blobs)
+1. ☁️ [Accessibility: Accessing resources across environments and users](#04--accessibility-portability-and-sharing)
    1. Saving and loading resources in the RNS
    2. Secrets, logging in, and setting defaults
-1. 📋Management UI
+1. 📋 [Management UI](#05--management-ui)
 
 ## 01 🏙 High-level Architecture
 
@@ -259,10 +259,10 @@ rh.folder(url='remote_directory', fs=rh.cluster('my_cluster').to('here', url='lo
 ### 04: 📦 Packages 
 (WIP)
 
-## 03: Data: Folders, Tables, Blobs
+## 03: 📂 Data: Folders, Tables, Blobs
 (WIP)
 
-## 04: Accessibility, Portability, and Sharing
+## 04: ☁️ Accessibility, Portability, and Sharing
 
 ### 01: The Resource Name System (RNS)
 Cloud resources are already inherently portable, so making them accessible 
@@ -443,3 +443,8 @@ To get secrets for a specific provider:
 ```
 my_creds = rh.Secrets.get(provider="aws")
 ```
+
+## 05: 📋 Management UI
+
+Runhouse offers a simple UI at [api.run.house](https://api.run.house/) for managing users, groups, resources, and 
+secrets. The current UI is an MVP and we plan to overhaul it within H1 2023.
