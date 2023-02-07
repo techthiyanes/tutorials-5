@@ -6,7 +6,7 @@ demonstrates an easy and inexpensive way to quickly get started with
 running Stable Diffusion.
 
 ## Table of Contents
-- [Hardware Setup](#hardware-setup)] 
+- [Hardware Setup](#hardware-setup)
 - [Stable Diffusion on a Cloud GPU in 5 lines of code](#01-stable-diffusion-on-a-cloud-gpu-in-5-lines-of-code)
 - [Fast Stable Diffusion with Model Pinning](#02-fast-stable-diffusion-with-model-pinning)
 - [FLAN-T5 Stable Diffusion](#03-flan-t5-stable-diffusion)
@@ -36,7 +36,7 @@ rh.cluster(name='rh-a10x', instance_type='A100:1').save()
 ```
 If you'd like to run these tutorials on a different kind of GPU, make sure to change the torch version appropriately
 in the `requirements.txt` file of this repo (e.g. for a V100, remove the 
-"--extra-index-url https://download.pytorch.org/whl/cu117" line). In many tutorials, those requirements will be 
+`"--extra-index-url https://download.pytorch.org/whl/cu117"` line). In many tutorials, those requirements will be 
 installed on your cluster when you setup a send.
 
 ## 01 Stable Diffusion on a Cloud GPU in 5 lines of code

@@ -54,49 +54,42 @@ remote_image_dir = 'dreambooth/instance_images'
 rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
 ```
 
-Next we create a Runhouse function to train dreambooth.
-We want to reuse the `main` function in 
+Now that we have the images, we can easily reuse
 [Hugging Face's Dreambooth training script](https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py),
-which we can accomplish by directly using passing the GitHub URL and function
-name to `fn`.
+without even needing to clone the code! First we install the necessary packages for running the script:
 
 ```python
-training_function_gpu = rh.send(
-    fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
-    hardware=gpu,
-    reqs=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
-        'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
-        'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'
-        ],
-    name='train_dreambooth')
+gpu.install_packages([rh.GitPackage(git_url='https://github.com/huggingface/diffusers.git',
+                                    install_method='pip', revision='v0.11.1'),
+                     'datasets', 'accelerate', 'transformers', 'bitsandbytes',
+                     'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
+                     'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'])
 ```
 
-Similarly, for creating training args using the `parse_args` function from the
-same GitHub file:
-```python
-create_train_args = rh.send(
-    fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
-    hardware=gpu,
-    reqs=[]
-)
-train_args = create_train_args(
-    input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
-                '--instance_data_dir', remote_image_dir,
-                '--instance_prompt', f'a photo of sks dog']
-    )
-```
-
-Now that we have all the pieces, we can put them together as follows to train
-our Dreambooth model.
+To run the training script, simply call `gpu.run` and input in the launch command as if you were
+running directly from your command line.
 
 ```python
-training_function_gpu(train_args)
+gpu.run([f'accelerate launch diffusers/examples/dreambooth/train_dreambooth.py '
+         f'--pretrained_model_name_or_path=stabilityai/stable-diffusion-2-base '
+         f'--instance_data_dir=dreambooth/instance_images '
+         f'--class_data_dir=dreambooth/class_images '
+         f'--output_dir=dreambooth/output '
+         f'--with_prior_preservation --prior_loss_weight=1.0 '
+         f'--instance_prompt="a photo of sks {class_name}" '
+         f'--class_prompt="a photo of {class_name}" '
+         f'--resolution=512 --max_train_steps=800 '
+         f'--train_batch_size=1 --gradient_accumulation_steps=2 --gradient_checkpointing --use_8bit_adam '
+         f'--learning_rate=5e-6 --lr_scheduler="constant" --lr_warmup_steps=0 --num_class_images=200 '
+         f'--mixed_precision=bf16 '
+         # f'--train_text_encoder '  # Uncomment if training on A100, but too heavy for A10G (AWS)
+         ])
 ```
 
-Once the model is done training, we can use it to run inference! Here we reuse the
+Once the model is done training, we're ready for inference! Here we reuse the
 `sd_generate_pinned` function from the [Stable Diffusion Tutorial](../t01_Stable_Diffusion/)
 to create our `generate_dreambooth` Runhouse callable. Simply pass in the
-prompt, model path, and any additional Stable Diffusion params to get results!
+prompt, model path, and any additional Stable Diffusion params to get results.
 
 ```python
 generate_dreambooth = rh.send(fn=sd_generate_pinned, hardware=gpu)
