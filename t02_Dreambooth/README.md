@@ -14,6 +14,10 @@ Dreambooth, perform inference, and even integrate a Gradio app.
 - [Appendix](#appendix)
     - [Dreambooth in Colab](#dreambooth-in-colab)
 
+> **Setup**:
+If you haven't already, please take a look at the 
+[Hardware Setup](../t01_Stable_Diffusion/README.md#00-hardware-setup) instructions in tutorial 01.
+
 ## 01 Dreambooth Fine-Tuning and Inference
 
 Dreambooth is a popular app that lets you fine-tune Stable Diffusion on your
@@ -163,6 +167,8 @@ take ~10 minutes.
 ## Dreambooth in Colab
 
 If you prefer to read or run this tutorial in Colab, you can do so 
-[here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t02_Dreambooth/x01_Colab_Dreambooth.ipynb).
-See the [Getting Started Section](../00_Getting_Started/README.md) for more details
-about logging in and running in notebooks.
+[here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t02_Dreambooth/x01_colab_dreambooth.ipynb).
+This step is optional, but creating a Runhouse account allows us to 
+conveniently jump into a Colab with our credentials and resources at the ready.
+See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
+about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).

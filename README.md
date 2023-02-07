@@ -45,6 +45,12 @@ We think they're the easiest way anywhere to run dreambooth on your own cloud GP
 [here](t02_Dreambooth/p02_gradio_clip_interrogator.py).
 * See our BERT fine-tuning pipeline example, [here](./t05_BERT_pipeline).
 
+### 🕳 If you want to go deeper:
+
+Se [the Runhouse overview](./x00_Overview) for detailed discussion of both the high level 
+architecture and core APIs. It's still a work in progress and will be 
+converted into a proper docsite soon.
+
 ## 🚨 Caution: This is an Alpha 🚨
 
 Runhouse is heavily under development. We are sharing

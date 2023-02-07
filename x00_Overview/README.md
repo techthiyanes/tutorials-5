@@ -5,18 +5,18 @@ overview of Runhouse and the APIs. If you're just looking to get started,
 you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.md).
 
 ## Table of Contents
-1. 🏙 [High-level Architecture](#01--high-level-architecture)
-1. 🖥 [Compute: Sends, Clusters, and Packages](#02--compute-sends-clusters-and-packages) 
-   1. Clusters, ssh / debugging
-   2. Sends
-   3. Runhouse in Notebooks
-1. 📂 [Data: Folders, Blobs, and Tables](#03--data-folders-tables-blobs)
-1. ☁️ [Accessibility: Accessing resources across environments and users](#04--accessibility-portability-and-sharing)
-   1. Saving and loading resources in the RNS
-   2. Secrets, logging in, and setting defaults
-1. 📋 [Management UI](#05--management-ui)
+1. 🏙 [High-level Architecture](#01-high-level-architecture)
+1. 🖥 [Compute: Sends, Clusters, and Packages](#02-compute--sends-clusters-and-packages) 
+   1. 🏘 Clusters, ssh / debugging
+   2. 🏹 Sends
+   3. 📓 Runhouse in Notebooks
+1. 📂 [Data: Folders, Blobs, and Tables](#03-data--folders-tables-blobs)
+1. ☁️ [Accessibility: Accessing resources across environments and users](#04-accessibility-portability-and-sharing)
+   1. 💾 Saving and loading resources in the RNS
+   2. 🤫 Secrets, logging in, and setting defaults
+1. 📋 [Management UI](#05-management-ui)
 
-## 01 🏙 High-level Architecture
+## 01 High-level Architecture
 
 Runhouse has four top-level objectives:
 1. Allowing users to natively program across compute resources
@@ -64,9 +64,9 @@ lineage for any resource (assuming the underlying the resources are not being de
 basic logging out of the box today, and are working on providing comprehensive logging, monitoring,
 alerting.
 
-## 02: 🖥 Compute: Sends, Clusters, and Packages
+## 02 Compute: Sends, Clusters, and Packages
 
-### 01: 🏘 Clusters
+### 01 Clusters
 
 Clusters represent a set of machines which can be sent code or data, or a machine spec
 that could be spun up in the event that we have some code or data to send to the machine.
@@ -162,7 +162,7 @@ If you want to run an application on the cluster that requires a port to be open
 gpu.ssh_tunnel(local_port=7860, remote_port=7860)
 ```
 
-### 02: 🏹 Sends
+### 02 Sends
 
 Runhouse allows you to send code a cluster, but still interact with it
 as a native runnable object (see [tutorial 01](../t01_Stable_Diffusion/p01_sd_generate.py)).
@@ -220,7 +220,7 @@ is the same as map as above, but we can pass the arguments as a list of tuples, 
 argument as a single value, since it's the same for all three prompts.
 
 
-### 03: 📓 Runhouse in Notebooks
+### 03 Runhouse in Notebooks
 
 If you prefer to work or debug in notebooks, you can call the following to tunnel a JupyterLab server into 
 your local browser from your Runhouse cluster or send:
@@ -256,15 +256,15 @@ You can sync down your code or data from the cluster when you're done with:
 rh.folder(url='remote_directory', fs=rh.cluster('my_cluster').to('here', url='local_directory')
 ```
 
-### 04: 📦 Packages 
+### 04 Packages 
 (WIP)
 
-## 03: 📂 Data: Folders, Tables, Blobs
+## 03 Data: Folders, Tables, Blobs
 (WIP)
 
-## 04: ☁️ Accessibility, Portability, and Sharing
+## 04 Accessibility, Portability, and Sharing
 
-### 01: The Resource Name System (RNS)
+### 01 The Resource Name System (RNS)
 Cloud resources are already inherently portable, so making them accessible 
 across environments and users in Google-Docs-like manner only requires a bit of
 metadata and snappy resource APIs. For example, if you wanted all of your collaborators
@@ -334,7 +334,7 @@ We're still early in uncovering the patterns and antipatterns for a global share
 data resources (shocker), but for now we generally encourage OSS projects to publish resources in the
 local RNS of their package, and individuals and teams to largely rely on Runhouse RNS.
 
-### 02: Secrets and Logging in
+### 02 Secrets and Logging in
 
 Using Runhouse across environments, such as reusing a service from inside a Colab
 or loading secrets or configs into a remote environment, is much easier if you create a Runhouse account.
@@ -385,8 +385,8 @@ Now that you've changed some configs, you probably want to save them to Runhouse
 
 **Viewing RPC logs**
 
-We will provide more instruction about log persistence and streaming shortly, but in the meantime, if you need to see the
-logs for the sends on a particular cluster, you can ssh into the cluster with `ssh <cluster name>` and
+If you didn't run your send with stream_logs=True and otherwise need to see the
+logs for Runhouse on a particular cluster, you can ssh into the cluster with `ssh <cluster name>` and
 'screen -r' (*and use `control A+D` to exit. If you control-C you will stop the server*).
 The server runs inside that screen instance, so logs are written to there.
 
@@ -396,7 +396,7 @@ Sometimes the RPC server will crash, or you'll update a package that the server 
 In those cases, you can try to restart just the server (~20 seconds) to save yourself the trouble of nuking
 and reallocating the hardware itself (minutes). You can do this by `my_cluster.restart_grpc_server()`.
 
-### 02: Saving and Loading Secrets from Vault
+### 02 Saving and Loading Secrets from Vault
 
 **Saving Secrets**
 
@@ -444,7 +444,7 @@ To get secrets for a specific provider:
 my_creds = rh.Secrets.get(provider="aws")
 ```
 
-## 05: 📋 Management UI
+## 05 Management UI
 
 Runhouse offers a simple UI at [api.run.house](https://api.run.house/) for managing users, groups, resources, and 
 secrets. The current UI is an MVP and we plan to overhaul it within H1 2023.

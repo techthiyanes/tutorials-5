@@ -2,11 +2,11 @@
 
 Runhouse is nothing more than an accessibility and sharing
 layer into your own cloud compute and data resources. This tutorial 
-demonstrates an easy and inexpensive way to quickly get started with
-running Stable Diffusion.
+demonstrates an easy and inexpensive way to run Stable Diffusion
+using Runhouse.
 
 ## Table of Contents
-- [Hardware Setup](#hardware-setup)
+- [Hardware Setup](#00-hardware-setup)
 - [Stable Diffusion on a Cloud GPU in 5 lines of code](#01-stable-diffusion-on-a-cloud-gpu-in-5-lines-of-code)
 - [Fast Stable Diffusion with Model Pinning](#02-fast-stable-diffusion-with-model-pinning)
 - [FLAN-T5 Stable Diffusion](#03-flan-t5-stable-diffusion)
@@ -14,7 +14,7 @@ running Stable Diffusion.
     - [Running in Colab](#running-in-colab)
 
 
-## 00: Hardware Setup
+## 00 Hardware Setup
 These tutorials are designed to use an Ampere-based GPU such as an A100. If you have
 GCP, Azure, or Lambda Labs enabled (run `sky check` to see if you do), you can proceed as-is. 
 If you have AWS credentials, you'll need to use an A10G as AWS doesn't have single 
@@ -261,6 +261,10 @@ images = generate_gpu(sequences, num_images=1, steps=50)
 ## Running in Colab
 
 If you prefer to read or run this tutorial in Colab, you can do so 
-[here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/x01_Colab_Stable_Diffusion.ipynb).
+[here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t01_Stable_Diffusion/x01_colab_stable_diffusion.ipynb).
 Note that this notebook still sends the models to GPUs in your cloud account and not
-the Colab GPUs (though you're still free to use them as you normally would). 
+the Colab GPUs (though you're still free to use them as you normally would).
+This step is optional, but creating a Runhouse account allows us to 
+conveniently jump into a Colab with our credentials and resources at the ready.
+See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
+about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).
