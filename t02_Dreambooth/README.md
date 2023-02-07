@@ -13,6 +13,7 @@ Dreambooth, perform inference, and even integrate a Gradio app.
 - [CLIP Interrogator: Running Hugging Face Spaces](#02-clip-interrogator)
 - [Appendix](#appendix)
     - [Dreambooth in Colab](#dreambooth-in-colab)
+    - [Dreambooth with GitHub Functions](#dreambooth-using-github-functions)
 
 > **Setup**:
 If you haven't already, please take a look at the 
@@ -25,8 +26,8 @@ own images so you can personalize your Stable Diffusion inferences.
 Hugging Face published a [great tutorial](https://huggingface.co/blog/dreambooth),
 but it's never easy to set up on your own hardware, so various Colabs are circulating
 to help people get started. We can run way faster on our own GPU, and we don't even 
-need to clone down the repo! This tutorial shows how to send a function to your 
-hardware from just a GitHub URL pointing to the function.
+need to clone down the repo! This tutorial shows how to launch a training script on your
+hardware from just a GitHub URL. 
 
 It also shows you basics of the data side of Runhouse, by:
 1) Creating an `rh.folder` with the training images and then sending it to the
@@ -89,6 +90,10 @@ gpu.run([f'accelerate launch diffusers/examples/dreambooth/train_dreambooth.py '
          # f'--train_text_encoder '  # Uncomment if training on A100, but too heavy for A10G (AWS)
          ])
 ```
+
+For an alternative way of running Dreambooth training, check out `p01b_dreambooth_train_send.py` and 
+the Appendix! Runhouse also allows you to send a function to your hardware from just a GitHub URL 
+pointing to the function.
 
 Once the model is done training, we're ready for inference! Here we reuse the
 `sd_generate_pinned` function from the [Stable Diffusion Tutorial](../t01_Stable_Diffusion/)
@@ -172,3 +177,50 @@ This step is optional, but creating a Runhouse account allows us to
 conveniently jump into a Colab with our credentials and resources at the ready.
 See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
 about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).
+
+## Dreambooth using GitHub Functions
+
+Runhouse also allows you to send a function to your hardware from just a GitHub URL pointing to the function,
+without needing to clone the repo here either!
+
+You can run this locally using:
+```commandline
+python p01b_dreambooth_train_send.py
+```
+
+Here, we the `main` function in 
+[Hugging Face's Dreambooth training script](https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py),
+which we accomplish by directly using passing the GitHub URL and function
+name to `fn` in our send object.
+
+```python
+training_function_gpu = rh.send(
+    fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
+    hardware=gpu,
+    reqs=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
+        'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
+        'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'
+        ],
+    name='train_dreambooth')
+```
+
+Similarly, for creating training args using the `parse_args` function from the
+same GitHub file:
+```python
+create_train_args = rh.send(
+    fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
+    hardware=gpu,
+    reqs=[]
+)
+train_args = create_train_args(
+    input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
+                '--instance_data_dir', remote_image_dir,
+                '--instance_prompt', f'a photo of sks dog']
+    )
+```
+
+Now that we have all the pieces, we can put them together as follows to train
+our Dreambooth model.
+
+```python
+training_function_gpu(train_args)
