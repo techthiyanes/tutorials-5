@@ -6,11 +6,11 @@ you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.
 
 ## Table of Contents
 1. 🏙 [High-level Architecture](#01-high-level-architecture)
-1. 🖥 [Compute: Sends, Clusters, and Packages](#02-compute--sends-clusters-and-packages) 
+1. 🖥 [Compute: Sends, Clusters, and Packages](#02-compute-sends-clusters-and-packages) 
    1. 🏘 Clusters, ssh / debugging
    2. 🏹 Sends
    3. 📓 Runhouse in Notebooks
-1. 📂 [Data: Folders, Blobs, and Tables](#03-data--folders-tables-blobs)
+1. 📂 [Data: Folders, Blobs, and Tables](#03-data-folders-tables-blobs)
 1. ☁️ [Accessibility: Accessing resources across environments and users](#04-accessibility-portability-and-sharing)
    1. 💾 Saving and loading resources in the RNS
    2. 🤫 Secrets, logging in, and setting defaults
@@ -56,7 +56,7 @@ portability and sharing of resources across users and environments. This is achi
 as long-living assets shared by teams or projects. Both resources and users can be 
 organized into arbitrarily-nested groups to apply access permissions, default behaviors (e.g. 
 default storage locations, compute providers, instance autotermination, etc.), project delineation,
-or staging (e.g. dev vs. prod). The [management UI](api.run.house) provides an individual or 
+or staging (e.g. dev vs. prod). The [management UI](https://api.run.house/) provides an individual or 
 admin view of all resources, secrets, groups, and sharing (this is only an MVP, and will be 
 overhauled soon). Resource metadata is automatically versioned in RNS, allowing teams to maintain
 single-sources of truth for assets with zero downtime to update or roll back, and trace exact 
@@ -165,7 +165,7 @@ gpu.ssh_tunnel(local_port=7860, remote_port=7860)
 ### 02 Sends
 
 Runhouse allows you to send code a cluster, but still interact with it
-as a native runnable object (see [tutorial 01](../t01_Stable_Diffusion/p01_sd_generate.py)).
+as a native runnable object (see [tutorial 01](../t01_Stable_Diffusion)).
 When you do this, the following steps occur:
 1) We check if the cluster is up, and bring up the cluster if not (only possible for autoscaled SkyClusters)
 2) We check that the cluster's gRPC server has started to handle requests to do things like 
@@ -175,7 +175,7 @@ Runhouse on the cluster and start the gRPC server. The gRPC server inits Ray.
 `cluster.install_packages()`. By default, we'll sync over the working git repo and install its
 requirements.txt if it has one.
 
-When you run your sent module, we send a gRPC request to the cluster with the
+When you run your send module, we send a gRPC request to the cluster with the
 module name and function entrypoint to run. The gRPC server adds the module to its python path, 
 imports the module, grabs the function entrypoint, runs it, and returns your results.
 
@@ -243,7 +243,7 @@ reused to shuttled around. As such:
 1) If you want to `rh.send` a function defined inside the notebook, it cannot contain variables or imports
 from outside the function, and you should assign a `name` to the send. We will write the function
 out to a separate `.py` file and import it from there, and the filename will be set to the `send.name`.
-2) If you really want to use local variables or avoid writing out the function, you can set the
+2) If you really want to use local variables or avoid writing out the function,
 you can set `serialize_notebook_fn=True` in `rh.send()` to cloudpickle the function before sending it,
 but we do not support saving and reloading these kinds of sends (cloudpickle does not support this 
 kind of reuse and it will create issues).
@@ -371,7 +371,7 @@ cloud providers to use spot instances. You can override this setting in the clus
 Clusters can start and stop dynamically to save money. If you set autostop = 10, the cluster will terminate after
 10 minutes of inactivity. If you set autostop = -1, the cluster will stay up indefinitely. After the cluster
 terminates, if you call a Send which is on that cluster, the Send will automatically start the cluster again.
-You can also call `cluster.keep_warm(autostop=-1) to control this for an existing cluster.
+You can also call `cluster.keep_warm(autostop=-1)` to control this for an existing cluster.
 `rh.configs.set('default_autostop', 30)`
 
 You can set your default Cloud provider if you have multiple Cloud accounts set up locally. If you set it
@@ -387,7 +387,7 @@ Now that you've changed some configs, you probably want to save them to Runhouse
 
 If you didn't run your send with stream_logs=True and otherwise need to see the
 logs for Runhouse on a particular cluster, you can ssh into the cluster with `ssh <cluster name>` and
-'screen -r' (*and use `control A+D` to exit. If you control-C you will stop the server*).
+`screen -r` (*and use `control A+D` to exit. If you control-C you will stop the server*).
 The server runs inside that screen instance, so logs are written to there.
 
 **Restarting the RPC Server**
