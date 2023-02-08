@@ -175,8 +175,8 @@ If you prefer to read or run this tutorial in Colab, you can do so
 [here](https://colab.research.google.com/github/run-house/tutorials/blob/main/t02_Dreambooth/x01_colab_dreambooth.ipynb).
 This step is optional, but creating a Runhouse account allows us to 
 conveniently jump into a Colab with our credentials and resources at the ready.
-See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
-about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).
+See [the overview](../t00_Overview/README.md#02-secrets-and-logging-in) for more details
+about logging in and [running in notebooks](../t00_Overview/README.md#notes-on-notebooks).
 
 ## Dreambooth using GitHub Functions
 

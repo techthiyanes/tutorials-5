@@ -17,8 +17,8 @@ If you haven't already, please take a look at the
 
 This step is optional, but creating a Runhouse account allows us to 
 conveniently jump into a Colab with our credentials and resources at the ready.
-See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
-about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).
+See [the overview](../t00_Overview/README.md#02-secrets-and-logging-in) for more details
+about logging in and [running in notebooks](../t00_Overview/README.md#notes-on-notebooks).
 
 ## 01 Experimenting with DALL-E to SD img2img in a Notebook
 

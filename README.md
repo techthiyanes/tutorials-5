@@ -47,7 +47,7 @@ We think they're the easiest way anywhere to run dreambooth on your own cloud GP
 
 ### 🕳 If you want to go deeper:
 
-See [the Runhouse overview](./x00_Overview) for detailed discussion of both the high level 
+See [the Runhouse overview](./t00_Overview) for detailed discussion of both the high level 
 architecture and core APIs. It's still a work in progress and will be 
 converted into a proper docsite soon.
 

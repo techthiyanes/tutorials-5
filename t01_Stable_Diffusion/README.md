@@ -266,5 +266,5 @@ Note that this notebook still sends the models to GPUs in your cloud account and
 the Colab GPUs (though you're still free to use them as you normally would).
 This step is optional, but creating a Runhouse account allows us to 
 conveniently jump into a Colab with our credentials and resources at the ready.
-See [the overview](../x00_Overview/README.md#02-secrets-and-logging-in) for more details
-about logging in and [running in notebooks](../x00_Overview/README.md#notes-on-notebooks).
+See [the overview](../t00_Overview/README.md#02-secrets-and-logging-in) for more details
+about logging in and [running in notebooks](../t00_Overview/README.md#notes-on-notebooks).

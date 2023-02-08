@@ -2,11 +2,11 @@
 
 This is a strictly optional section for those who want a more comprehensive 
 overview of Runhouse and the APIs. If you're just looking to get started, 
-you can skip this section and jump to the [Quickstart](../x01_Quickstart/README.md).
+you can skip this section and jump to the [Quickstart](../t01_Stable_Diffusion).
 
 ## Table of Contents
 1. 🏙 [High-level Architecture](#01-high-level-architecture)
-1. 🖥 [Compute: Sends, Clusters, and Packages](#02-compute-sends-clusters-and-packages) 
+1. 🖥 [Compute: Sends, Clusters, and Packages](#02-compute-sends-clusters-and-packages)
    1. 🏘 Clusters, ssh / debugging
    2. 🏹 Sends
    3. 📓 Runhouse in Notebooks
