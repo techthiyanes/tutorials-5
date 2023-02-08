@@ -73,8 +73,9 @@ that could be spun up in the event that we have some code or data to send to the
 Generally they are Ray clusters under the hood. There are two kinds of clusters today:
 
 **1. BYO Cluster**
-This is a machine or group of machines that you input the IP addresses of. You can
-then interact with these machines through the other Runhouse APIs. This is useful
+
+This is a machine or group of machines specified by IP addresses and SSH credentials, which 
+can be dispatched code or data through the Runhouse APIs. This is useful
 if you have an on-prem instance, or an account with Paperspace, Coreweave, or another
 vertical provider, or simply want to spin up machines yourself through the cloud UI.
 You can use the cluster factory constructor like so:
@@ -90,8 +91,19 @@ gpu = rh.cluster(ips=['<ip of the cluster>'],
 
 Runhouse can spin up and down boxes for you as needed using SkyPilot. When you
 define a SkyPilot "cluster," you're primarily defining the configuration for us to spin
-up the compute resources you need later. When someone then calls a send or similar, we'll 
-spin the box back up for you.
+up the compute resources on-demand. When someone then calls a send or similar, we'll 
+spin the box back up for you. You can also create these through the cluster factory constructor:
+
+```python
+gpu = rh.cluster(name='rh-4-a100s', 
+                 instance_type='A100:4',    # Can also be 'CPU:8' or cloud-specific strings, like 'g5.2xlarge' 
+                 provider='gcp',            # defaults to default_provider or cheapest if left empty
+                 autostop_mins=-1,          # Defaults to 30 mins or default_autostop_mins, -1 suspends autostop
+                 use_spot=True,             # You must have spot quota approved to use this
+                 image_id='my_ami_string',     # Generally defaults to basic deep-learning AMIs through SkyPilot
+                 region='us-east-1'         # Looks for cheapest on your continent if empty
+                 )
+```
 
 SkyPilot also provides an excellent suite of CLI commands for basic instance 
 management operations. Some important ones are:
@@ -110,6 +122,24 @@ ssh will just work.
 cluster to autostop after that many minutes of inactivity. By default this
 number is 10 minutes, but you can set it to -1 to disable autostop entirely.
 You can set your default autostop in `~/.rh/config.yaml`.
+
+**Existing Clusters**
+
+"Existing cluster" can mean either a saved SkyCluster config, which will be brought back
+up if needed, or a BYO or SkyCluster that's already up. If you save the Cluster to Runhouse RNS, you'll
+be able to dispatch to it from any environment. Multiple users or environments can send requests to a cluster
+without issue, and either the OS or Ray (depending on the call to the cluster) will
+handle the resource contention.
+
+You can load an existing cluster by name from local or Runhouse RNS simply by:
+```python
+gpu = rh.cluster(name='~/my-local-a100')
+gpu = rh.cluster(name='@/my-a100-in-rh-rns')
+gpu = rh.cluster(name='^rh-v100')  # Loads a builtin cluster config
+
+# or, if you just want to load the Cluster object without refreshing its status
+gpu = rh.cluster(name='^rh-v100', dryrun=True)
+```
 
 **Advanced Cluster Usage**
 
