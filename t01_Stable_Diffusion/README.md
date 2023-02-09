@@ -57,19 +57,11 @@ To run this tutorial from your laptop:
 python p01_sd_generate.py
 ```
 
-First, we instantiate a cluster called `rh-a10x`, based on your cloud credentials. 
+First, instantiate the `rh-a10x` cluster, which is saved down into our configs in the
+[previous section](#00-hardware-setup).
 
 ```python
-# For GCP, Azure, or Lambda Labs
-gpu = rh.cluster(name='rh-a10x', instance_type='A100:1').save()
-
-# For AWS (single A100s not available, base A10G may have insufficient CPU RAM)
-gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').save()
-
-# To use our own GPU (or from a different provider, e.g. Paperspace, Coreweave)
-gpu = rh.cluster(ips=['<cluster ip>'], 
-                 ssh_creds={'ssh_user': '...', 'ssh_private_key':'<path_to_key>'},
-                 name='rh-a10x').save()
+gpu = rh.cluster(name='rh-a10x')
 ```
 
 Next, we define the function that we would like to be able to run on the
@@ -100,7 +92,10 @@ and <2GB. This limit is subject to change if needed.
 # This function runs the `sd_generate` function on `gpu` cluster
 # Setting reqs=['./'] will sync over this git repo and install its dependencies
 # If the cluster is not up yet, this step will also spin up the cluster
-generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./'])
+generate_gpu = rh.send(fn=sd_generate).to(gpu, reqs=['./'])
+# or, using a slightly different API with the same outcome
+# generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./'])
+
 
 rh_prompt = 'A digital illustration of a woman running on the roof of a house.'
 images = generate_gpu(rh_prompt, num_images=4, steps=50)
