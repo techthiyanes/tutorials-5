@@ -87,10 +87,10 @@ gpu = rh.cluster(ips=['<ip of the cluster>'],
 ```
 
 
-**2. SkyPilot Clusters**
+**2. On-Demand Clusters**
 
-Runhouse can spin up and down boxes for you as needed using SkyPilot. When you
-define a SkyPilot "cluster," you're primarily defining the configuration for us to spin
+Runhouse can spin up and down boxes for you as needed using (SkyPilot)[https://github.com/skypilot-org/skypilot].
+When you define a SkyPilot "cluster," you're primarily defining the configuration for us to spin
 up the compute resources on-demand. When someone then calls a send or similar, we'll 
 spin the box back up for you. You can also create these through the cluster factory constructor:
 
@@ -147,9 +147,11 @@ To start an ssh session into the cluster so you can poke around or debug:
 ```commandline
 ssh rh-v100
 ```
-Or in python:
+or in Python:
 ```python
-my_send.ssh()
+my_cluster.ssh()
+# or
+# my_send.ssh()
 ```
 We realize our logging situation is not ideal and we're working on improving it. For
 now, the easiest way to view outputs and logs is by sshing into the cluster and running:
@@ -172,6 +174,7 @@ my_send.notebook()
 # or
 my_cluster.notebook()
 ```
+The [Runhouse in Notebooks](#03-runhouse-in-notebooks) section goes more in depth on notebooks.
 
 To run a shell command on the cluster:
 ```python
@@ -230,15 +233,15 @@ run longer execution in notebooks without locking up the kernel.
 images_ref = generate_gpu.remote('A dog.', num_images=1, steps=50)
 images = rh.get(images_ref)
 # or
-my_other_sent_function(images_ref)
+my_other_send_function(images_ref)
 ```
 
 `.enqueue` will queue up your function call on the cluster to make sure it doesn't run 
 simultaneously with other calls, but will wait until the execution completes.
 
-`map` and `starmap` are easy way to parallelize your function (again using Ray on the cluster).
+`.map` and `.starmap` are easy way to parallelize your function (again using Ray on the cluster).
 ```python
-images = generate_gpu.map(['A dog.', 'A cat.', 'A biscuit.'], num_images=[1]*3, steps=[50]*3)
+generate_gpu.map(['A dog.', 'A cat.', 'A biscuit.'], num_images=[1]*3, steps=[50]*3)
 ```
 will run the function on each of the three prompts, and return a list of the results. Note that the
 num_images and steps arguments are broadcasted to each prompt, so the first prompt will get 1 image.
@@ -246,7 +249,7 @@ num_images and steps arguments are broadcasted to each prompt, so the first prom
 ```python
 generate_gpu.starmap([('A dog.', 1), ('A cat.', 2), ('A biscuit.', 3)], steps=50)
 ```
-is the same as map as above, but we can pass the arguments as a list of tuples, and we can pass the steps
+is the same as map as above, but we can pass the arguments as a list of tuples, and the steps
 argument as a single value, since it's the same for all three prompts.
 
 
@@ -257,7 +260,7 @@ your local browser from your Runhouse cluster or send:
 ```commandline
 runhouse notebook my_cluster
 ```
-or in python:
+or in Python:
 ```python
 my_cluster.notebook()
 ```
@@ -274,14 +277,14 @@ reused to shuttled around. As such:
 from outside the function, and you should assign a `name` to the send. We will write the function
 out to a separate `.py` file and import it from there, and the filename will be set to the `send.name`.
 2) If you really want to use local variables or avoid writing out the function,
-you can set `serialize_notebook_fn=True` in `rh.send()` to cloudpickle the function before sending it,
+you can set `serialize_notebook_fn=True` in `rh.send()`. This will cloudpickle the function before sending it,
 but we do not support saving and reloading these kinds of sends (cloudpickle does not support this 
 kind of reuse and it will create issues).
 3) It is nearly always better to try to write your code in a `.py` file somewhere and import it 
 into the notebook, rather than define important functions in the notebook itself. You can also use the 
 `%%writefile` magic to write your code into a file, and then import it back into the notebook. 
 
-You can sync down your code or data from the cluster when you're done with:
+If you want to sync down your code or data to local from the cluster afterwards:
 ```python
 rh.folder(url='remote_directory', fs=rh.cluster('my_cluster').to('here', url='local_directory')
 ```
@@ -319,10 +322,10 @@ right in the repo, rather than having to be aware that it exists behind an API. 
 some research, and the exact cloud configurations and data artifacts you used were published with it
 so consumers of the work don't need to reverse engineer your compute and data rig.
 2. "Runhouse RNS" - The RNS API allows your resources to be accessible anywhere with an internet connection and 
-python interpreter, so it's obviously way more portable. It also allows you to quickly share resources with 
+Python interpreter, so it's obviously way more portable. It also allows you to quickly share resources with
 collaborators without needing to check them into git and ask them to fetch and change their branch. The 
 web-based approach also allows you to keep a global source of truth for a resource (e.g. a single BERT 
-preprocessing service shared by a team, or a most up to date model checkpoint), which will be updated
+preprocessing service shared by a team, or a most up-to-date model checkpoint), which will be updated
 with zero downtime by all consumers when you push a new version. Lastly, the RNS API is backed by a 
 management API to view and manage all resources.
 
@@ -384,7 +387,7 @@ and none of the other prompts will have any real effect (you probably haven't se
 runhouse login
 ```
 
-Or in Python (e.g. in a notebook)
+or in Python (e.g. in a notebook)
 ```python
 rh.login(interactive=True)
 ```
