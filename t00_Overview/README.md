@@ -89,7 +89,7 @@ gpu = rh.cluster(ips=['<ip of the cluster>'],
 
 **2. On-Demand Clusters**
 
-Runhouse can spin up and down boxes for you as needed using (SkyPilot)[https://github.com/skypilot-org/skypilot].
+Runhouse can spin up and down boxes for you as needed using [SkyPilot](https://github.com/skypilot-org/skypilot).
 When you define a SkyPilot "cluster," you're primarily defining the configuration for us to spin
 up the compute resources on-demand. When someone then calls a send or similar, we'll 
 spin the box back up for you. You can also create these through the cluster factory constructor:
