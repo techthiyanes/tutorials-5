@@ -70,15 +70,15 @@ alerting.
 
 Clusters represent a set of machines which can be sent code or data, or a machine spec
 that could be spun up in the event that we have some code or data to send to the machine.
-Generally they are Ray clusters under the hood. There are two kinds of clusters today:
+Generally they are [Ray clusters](https://docs.ray.io/en/latest/cluster/getting-started.html) under the hood. There are two kinds of clusters today:
 
 **1. BYO Cluster**
 
 This is a machine or group of machines specified by IP addresses and SSH credentials, which 
 can be dispatched code or data through the Runhouse APIs. This is useful
-if you have an on-prem instance, or an account with Paperspace, Coreweave, or another
-vertical provider, or simply want to spin up machines yourself through the cloud UI.
-You can use the cluster factory constructor like so:
+if you have an on-prem instance, or an account with [Paperspace](https://www.paperspace.com/),
+[Coreweave](https://www.coreweave.com/), or another vertical provider, or simply want to spin up machines yourself 
+through the cloud UI. You can use the cluster factory constructor like so: 
 
 ```python
 gpu = rh.cluster(ips=['<ip of the cluster>'], 
@@ -393,6 +393,7 @@ rh.login(interactive=True)
 ```
 
 **Setting Config Options**
+
 Runhouse stores user configs both locally in `~/.rh/config.yaml` and remotely in the Runhouse database.
 This allows you to preserve your same config across environments. Some important configs to consider setting:
 
@@ -479,5 +480,5 @@ my_creds = rh.Secrets.get(provider="aws")
 
 ## 05 Management UI
 
-Runhouse offers a simple UI at [api.run.house](https://api.run.house/) for managing users, groups, resources, and 
+Runhouse offers a [simple UI](https://api.run.house/) for managing users, groups, resources, and 
 secrets. The current UI is an MVP and we plan to overhaul it within H1 2023.
