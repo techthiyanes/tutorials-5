@@ -78,4 +78,4 @@ such as on-prem or Kubernetes, are also on the roadmap (likely through our frien
 
 ## 👷‍♀️ Contributing
 
-We welcome contributions! Please contact us if you're interested.
+We welcome contributions! Please check out out [contributing](CONTRIBUTING.md) if you're interested.
