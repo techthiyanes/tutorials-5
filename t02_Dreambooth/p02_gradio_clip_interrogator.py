@@ -8,7 +8,7 @@ def launch_gradio_space(name):
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    my_space = rh.send(fn=launch_gradio_space).to(gpu, reqs=['./', 'gradio', 'fairscale', 'ftfy',
+    my_space = rh.function(fn=launch_gradio_space).to(gpu, reqs=['./', 'gradio', 'fairscale', 'ftfy',
                                                              'huggingface-hub', 'Pillow', 'timm',
                                                              'open_clip_torch', 'clip-interrogator==0.3.1'])
     gpu.ssh_tunnel(local_port=7860, remote_port=7860)

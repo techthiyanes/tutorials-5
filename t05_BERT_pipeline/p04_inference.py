@@ -21,8 +21,8 @@ def create_prediction_service(model_name):
 if __name__ == "__main__":
     rh.set_folder('~/bert/sentiment_analysis', create=True)
     predict_fn = create_prediction_service('yelp_fine_tuned_bert')
-    bert_sa_service = rh.send(fn=predict_fn,
-                              hardware="^rh-1-cpu",
+    bert_sa_service = rh.function(fn=predict_fn,
+                              system="^rh-1-cpu",
                               name="prediction_service")
     new_examples = [
         'This place is sick!',
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # TODO show sharing.
     # Collaborators or other environments can use the following to get the microservice callable,
     # without any additional installations.
-    # BERT_sa_service = rh.send(name="<your username>/bert/sentiment_analysis/prediction_service")
-    # Note that I can manage who has access to my Sends, and all my other Runhouse resources, via
+    # BERT_sa_service = rh.function(name="<your username>/bert/sentiment_analysis/prediction_service")
+    # Note that I can manage who has access to my Functions, and all my other Runhouse resources, via
     # a single access control plane. I can share them with individual Runhouse accounts, my team,
     # my company, or the general public.

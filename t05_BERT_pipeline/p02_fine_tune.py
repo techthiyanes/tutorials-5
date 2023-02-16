@@ -52,8 +52,8 @@ if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x').up_if_not()
     preprocessed_yelp = rh.table(name="preprocessed-tokenized-dataset")
 
-    ft_model = rh.send(fn=fine_tune_model,
-                       hardware=gpu,
+    ft_model = rh.function(fn=fine_tune_model,
+                       system=gpu,
                        load_secrets=True,
                        name='finetune_ddp_1gpu').save()
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     # ft_model.send_secrets(providers=['sky'])
 
     # Send get_model and get_optimizer to the cluster so we can call .remote and instantiate them on the cluster
-    model_on_gpu = rh.send(fn=get_model, hardware=gpu, dryrun=True)
-    optimizer_on_gpu = rh.send(fn=get_optimizer, hardware=gpu, dryrun=True)
+    model_on_gpu = rh.function(fn=get_model, system=gpu, dryrun=True)
+    optimizer_on_gpu = rh.function(fn=get_optimizer, system=gpu, dryrun=True)
 
     # Receive an object ref for the model and optimizer
     bert_model = model_on_gpu.remote(num_labels=5, model_id='bert-base-cased')

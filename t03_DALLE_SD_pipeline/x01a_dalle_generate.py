@@ -16,7 +16,7 @@ def unclip_generate(prompt,
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    generate_karlo_gpu = rh.send(fn=unclip_generate, hardware=gpu, name='karlo_generate').save()
+    generate_karlo_gpu = rh.function(fn=unclip_generate, system=gpu, name='karlo_generate').save()
 
     # The first time we run this it will take ~8 minutes to download the model, which is pretty large.
     # Subsequent calls will only take ~1 second per image

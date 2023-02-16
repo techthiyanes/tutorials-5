@@ -27,13 +27,13 @@ def sd_upscaler_generate(prompt, base_images, num_images=1,
     return ret
 
 if __name__ == "__main__":
-    dalle_generate = rh.send(name='karlo_generate')
+    dalle_generate = rh.function(name='karlo_generate')
     my_prompt = 'Shrek giving a TED talk to an audience of Minions.'
     base_images = dalle_generate(my_prompt)
     base_images[0].show()
 
     # v100_gpu = rh.cluster(name='rh-v100', instance_type='V100:1', provider='cheapest')
-    sd_upscaler_generate_gpu = rh.send(fn=sd_upscaler_generate, hardware=dalle_generate.hardware,
+    sd_upscaler_generate_gpu = rh.function(fn=sd_upscaler_generate, system=dalle_generate.hardware,
                                        reqs=['local:./'], name='sd_upscaler_generate')
 
     sd_upscaled_images = sd_upscaler_generate_gpu(my_prompt, base_images, guidance_scale=7.5,

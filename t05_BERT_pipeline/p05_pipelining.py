@@ -12,7 +12,7 @@ def simple_bert_fine_tuning_service(dataset,
     # Preprocess
     preproc_table_name = dataset.name + "_preprocessed"
     if not rh.exists(name=preproc_table_name, resource_type='table'):
-        preproc = rh.send(name="BERT_preproc_32cpu")
+        preproc = rh.function(name="BERT_preproc_32cpu")
         preprocessed_table = preproc(dataset).from_cluster(preproc.hardware)
         preprocessed_table.save(name=preproc_table_name)
     else:
@@ -22,7 +22,7 @@ def simple_bert_fine_tuning_service(dataset,
     model_name = dataset.name + '_ft_bert'
     if not rh.exists(name=model_name, resource_type='blob'):
         bert_model, adam_optimizer = get_model_and_optimizer(model_id=model_id, num_labels=5, lr=5e-5)
-        ft_model = rh.send(name='finetune_ddp_4gpu')
+        ft_model = rh.function(name='finetune_ddp_4gpu')
         trained_model = ft_model(preprocessed_table,
                                  bert_model,
                                  adam_optimizer,
@@ -32,15 +32,15 @@ def simple_bert_fine_tuning_service(dataset,
         trained_model = pickle.loads(rh.blob(name=model_name).data)
 
     # Evaluate
-    model_eval = rh.send(name='evaluate_model')
+    model_eval = rh.function(name='evaluate_model')
     test_accuracy = model_eval(preprocessed_table, trained_model)
     assert test_accuracy > 0.8, "Model accuracy is too low for production!"
 
     # Deploy
-    rh.send(name='deploy_model', fn=pipelined_bert_fine_tuning_service)
+    rh.function(name='deploy_model', fn=pipelined_bert_fine_tuning_service)
     predict_fn = create_prediction_service(model_name)
-    predict_service = rh.send(fn=predict_fn,
-                              hardware="^rh-1-cpu",
+    predict_service = rh.function(fn=predict_fn,
+                              system="^rh-1-cpu",
                               name=dataset.name + "_bert_ft_service")
 
     return predict_service
@@ -54,7 +54,7 @@ def pipelined_bert_fine_tuning_service(dataset,
 
 if __name__ == "__main__":
     rh.set_folder('/donnyg/bert/sentiment_analysis', create=True)
-    yelp_table = rh.table(name="yelp_reviews", data_source='hf', url='yelp_review_full')
+    yelp_table = rh.table(name="yelp_reviews", data_source='hf', path='yelp_review_full')
     bert_sa_service = simple_bert_fine_tuning_service(yelp_table, epochs=3)
     prompt = "I could eat hot dogs at Larry's every day."
     print(f'Review: {prompt}; sentiment score: {bert_sa_service(prompt)}')

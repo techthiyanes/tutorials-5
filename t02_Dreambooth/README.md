@@ -56,7 +56,7 @@ gpu = rh.cluster(name='rh-a10x')
 
 input_images_dir = 'assets/t02/images'
 remote_image_dir = 'dreambooth/instance_images'
-rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
+rh.folder(path=input_images_dir).to(system=gpu,(path=remote_image_dir)
 ```
 
 Now that we have the images, we can easily reuse
@@ -101,7 +101,7 @@ to create our `generate_dreambooth` Runhouse callable. Simply pass in the
 prompt, model path, and any additional Stable Diffusion params to get results.
 
 ```python
-generate_dreambooth = rh.send(fn=sd_generate_pinned, hardware=gpu)
+generate_dreambooth = rh.function(fn=sd_generate_pinned, system=gpu)
 my_prompt = "sks dog in a field of purple flowers"
 model_path = 'dreambooth/output'
 images = generate_dreambooth(my_prompt,
@@ -137,9 +137,9 @@ running the gradio function on the cluster.
 
 ```python
 gpu = rh.cluster(name='rh-a10x')
-my_space = rh.send(
+my_space = rh.function(
     fn=launch_gradio_space,
-    hardware=gpu,
+    system=gpu,
     reqs=['./', 'gradio', 'fairscale', 'ftfy','huggingface-hub', 'Pillow', 
           'timm', 'open_clip_torch', 'clip-interrogator==0.3.1',]
     )
@@ -192,12 +192,12 @@ python p01b_dreambooth_train_send.py
 Here, we the `main` function in 
 [Hugging Face's Dreambooth training script](https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py),
 which we accomplish by directly using passing the GitHub URL and function
-name to `fn` in our send object.
+name to `fn` in our function object.
 
 ```python
-training_function_gpu = rh.send(
+training_function_gpu = rh.function(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
-    hardware=gpu,
+    system=gpu,
     reqs=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
         'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
         'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'
@@ -208,9 +208,9 @@ training_function_gpu = rh.send(
 Similarly, for creating training args using the `parse_args` function from the
 same GitHub file:
 ```python
-create_train_args = rh.send(
+create_train_args = rh.function(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
-    hardware=gpu,
+    system=gpu,
     reqs=[]
 )
 train_args = create_train_args(

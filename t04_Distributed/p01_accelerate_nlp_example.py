@@ -7,8 +7,8 @@ import runhouse as rh
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    train_gpu = rh.send(fn='https://github.com/huggingface/accelerate/blob/v0.15.0/examples/nlp_example.py:training_function',
-                        hardware=gpu,
+    train_gpu = rh.function(fn='https://github.com/huggingface/accelerate/blob/v0.15.0/examples/nlp_example.py:training_function',
+                        system=gpu,
                         reqs=['pip:./accelerate', 'transformers', 'datasets', 'evaluate',
                               'tqdm', 'scipy', 'scikit-learn', 'tensorboard',
                               'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'

@@ -37,7 +37,7 @@ rh.cluster(name='rh-a10x', instance_type='A100:1').save()
 If you'd like to run these tutorials on a different kind of GPU, make sure to change the torch version appropriately
 in the `requirements.txt` file of this repo (e.g. for a V100, remove the 
 `"--extra-index-url https://download.pytorch.org/whl/cu117"` line). In many tutorials, those requirements will be 
-installed on your cluster when you setup a send.
+installed on your cluster when you setup a function.
 
 ## 01 Stable Diffusion on a Cloud GPU in 5 lines of code
 
@@ -74,7 +74,7 @@ def sd_generate(prompt, num_images=1, steps=100, guidance_scale=7.5, model_id='s
     return pipe([prompt] * num_images, num_inference_steps=steps, guidance_scale=guidance_scale).images
 ```
 
-To run the function, we create a Python callable using `rh.send`, which stands
+To run the function, we create a Python callable using `rh.function`, which stands
 for **s**erverless **end**point, and pass in the corresponding hardware, or
 cluster, that we want it to be run on, along with any dependencies or
 requirements to install or sync over to the remote cluster. This callable
@@ -92,9 +92,9 @@ and <2GB. This limit is subject to change if needed.
 # This function runs the `sd_generate` function on `gpu` cluster
 # Setting reqs=['./'] will sync over this git repo and install its dependencies
 # If the cluster is not up yet, this step will also spin up the cluster
-generate_gpu = rh.send(fn=sd_generate).to(gpu, reqs=['./'])
+generate_gpu = rh.function(fn=sd_generate).to(gpu, reqs=['./'])
 # or, using a slightly different API with the same outcome
-# generate_gpu = rh.send(fn=sd_generate, hardware=gpu, reqs=['./'])
+# generate_gpu = rh.function(fn=sd_generate, system=gpu, reqs=['./'])
 
 
 rh_prompt = 'A digital illustration of a woman running on the roof of a house.'
@@ -173,7 +173,7 @@ gpu = rh.cluster(name='rh-a10x', instance_type='A100:1')
 # For AWS
 # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')
 
-generate_gpu = rh.send(fn=sd_generate_pinned, hardware=gpu, name='sd_generate').save()
+generate_gpu = rh.function(fn=sd_generate_pinned, system=gpu, name='sd_generate').save()
 my_prompt = 'A hot dog made of matcha powder.'
 images = generate_gpu(my_prompt, num_images=4, steps=50)
 [image.show() for image in images]
@@ -186,7 +186,7 @@ images = generate_gpu(my_prompt, num_images=4, steps=50)
 Generating prompts is tiring, so let's use FLAN-T5, a text-to-text generation
 model, to do it for us. We'll send a FLAN-T5 inference function to our GPU, and
 then pipe the outputs into our Stable Diffusion service. In this process, we
-also show how one can go about reusing a cluster and pipelining sends.
+also show how one can go about reusing a cluster and pipelining functions.
 
 To run this tutorial from your laptop:
 ```commandline
@@ -217,8 +217,8 @@ download the model. Future runs using the pinned model should take ~4 secs.
 gpu = rh.cluster(name='rh-a10x', instance_type='A100:1') # GCP and Azure
 # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws')  # On AWS
 
-flan_t5_generate = rh.send(fn=causal_lm_generate,
-                            hardware=gpu,
+flan_t5_generate = rh.function(fn=causal_lm_generate,
+                            system=gpu,
                             reqs=['local:./'],
                             name='flan_t5_generate')
 
@@ -245,7 +245,7 @@ If you logged into Runhouse, it was saved on our Resource Naming Server. If you 
 the rh/ directory of the top-level git directory.
 
 ```python
-generate_gpu = rh.send(name='sd_generate')
+generate_gpu = rh.function(name='sd_generate')
 images = generate_gpu(sequences, num_images=1, steps=50)
 [image.show() for image in images]
 ```

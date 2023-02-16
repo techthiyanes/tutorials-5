@@ -6,9 +6,9 @@ import runhouse as rh
 
 def train_dreambooth(input_images_dir, class_name='person'):
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    training_function_gpu = rh.send(
+    training_function_gpu = rh.function(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:main',
-        hardware=gpu,
+        system=gpu,
         reqs=['pip:./diffusers', 'datasets', 'accelerate', 'transformers',
               'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'],
         name='train_dreambooth')
@@ -16,11 +16,11 @@ def train_dreambooth(input_images_dir, class_name='person'):
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
 
     remote_image_dir = 'dreambooth/instance_images'
-    rh.folder(url=input_images_dir).to(fs=gpu, url=remote_image_dir)
+    rh.folder(path=input_images_dir).to(system=gpu,(path=remote_image_dir)
 
-    create_train_args = rh.send(
+    create_train_args = rh.function(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:parse_args',
-        hardware=gpu, reqs=[])
+        system=gpu, reqs=[])
     train_args = create_train_args(input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
                                                '--instance_data_dir', remote_image_dir,
                                                '--instance_prompt', f'a photo of sks {class_name}'])

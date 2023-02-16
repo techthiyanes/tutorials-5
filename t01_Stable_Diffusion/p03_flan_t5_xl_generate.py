@@ -14,7 +14,7 @@ def causal_lm_generate(prompt, model_id='google/flan-t5-xl', **model_kwargs):
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    flan_t5_generate = rh.send(fn=causal_lm_generate).to(gpu, reqs=['./'])
+    flan_t5_generate = rh.function(fn=causal_lm_generate).to(gpu, reqs=['./'])
 
     # The first time this runs it will take ~7 minutes to download the model. After that it takes ~4 seconds.
     # Generation options: https://huggingface.co/docs/transformers/main/en/main_classes/text_generation#transformers.GenerationConfig
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     for seq in sequences:
         print(seq)
 
-    generate_gpu = rh.send(name='sd_generate')
+    generate_gpu = rh.function(name='sd_generate')
     images = generate_gpu(sequences, num_images=1, steps=50)
     [image.show() for image in images]
 
