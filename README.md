@@ -50,12 +50,10 @@ We think they're the easiest way anywhere to run dreambooth on your own cloud GP
 Please check out our [docs site](https://runhouse-docs.readthedocs-hosted.com/en/latest/index.html)!
 In addition to documentation, we also provide both high level and detailed overviews of the Runhouse architecture.
 
-## 🚨 Caution: This is an Alpha 🚨
+## 🚨 This is an Alpha 🚨
 
-Runhouse is heavily under development. We are sharing
-it with a few select people to collect feedback, and
-expect to iterate on the APIs considerably before reaching beta
-(version 0.1.0).
+Runhouse is heavily under development, and we expect to iterate 
+on the APIs before reaching beta (version 0.1.0).
 
 ## 🙋‍♂️ Getting Help
 
