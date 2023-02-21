@@ -41,7 +41,7 @@ if __name__ == "__main__":
     # Not being saved, just a helper here to load the dataset on the cluster instead of locally
     # (and then sending it up).
     remote_load_dataset = rh.function(fn=load_dataset,
-                                  system=preproc.hardware,
+                                  system=preproc.system,
                                   dryrun=True)
 
     # Notice how we call this function with `.remote` - this calls the function async, leaves the result on the
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
 
     # from_cluster converts the table's file references to sftp file references without copying it
-    preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.hardware)
+    preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.system)
 
     batches = preprocessed_yelp.stream(batch_size=100)
     for idx, batch in enumerate(batches):
