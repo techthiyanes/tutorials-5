@@ -56,7 +56,7 @@ gpu = rh.cluster(name='rh-a10x')
 
 input_images_dir = 'assets/t02/images'
 remote_image_dir = 'dreambooth/instance_images'
-rh.folder(path=input_images_dir).to(system=gpu,(path=remote_image_dir)
+rh.folder(path=input_images_dir).to(system=gpu, path=remote_image_dir)
 ```
 
 Now that we have the images, we can easily reuse

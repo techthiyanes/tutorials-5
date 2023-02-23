@@ -13,7 +13,7 @@ if __name__ == "__main__":
                           'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
                           'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'])
 
-    rh.folder(path=input_images_dir).to(system=gpu,(path='dreambooth/instance_images')
+    rh.folder(path=input_images_dir).to(system=gpu, path='dreambooth/instance_images')
 
     gpu.run([f'accelerate launch diffusers/examples/dreambooth/train_dreambooth.py '
              f'--pretrained_model_name_or_path=stabilityai/stable-diffusion-2-base '

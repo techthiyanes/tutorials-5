@@ -16,7 +16,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])
 
     remote_image_dir = 'dreambooth/instance_images'
-    rh.folder(path=input_images_dir).to(system=gpu,(path=remote_image_dir)
+    rh.folder(path=input_images_dir).to(system=gpu, path=remote_image_dir)
 
     create_train_args = rh.function(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:parse_args',
