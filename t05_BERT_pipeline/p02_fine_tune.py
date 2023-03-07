@@ -49,13 +49,14 @@ def get_optimizer(model, lr):
 
 
 if __name__ == "__main__":
+    # For GCP, Azure, or Lambda Labs
     gpu = rh.cluster(name='rh-a10x', instance_type='A100:1').up_if_not()
 
     # Note: If you have AWS creds, you'll need to use an A10G as AWS doesn't have single A100s available
     # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').up_if_not()
 
-    # Load the preprocessed table we built in p01
-    preprocessed_yelp = rh.table(name="preprocessed-tokenized-dataset", dryrun=True)
+    # Load the preprocessed table we built in p01 - we'll stream the data directly on the cluster later on
+    preprocessed_yelp = rh.Table.from_name(name="preprocessed-tokenized-dataset")
 
     ft_model = rh.function(fn=fine_tune_model,
                            system=gpu,

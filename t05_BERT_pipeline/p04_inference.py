@@ -19,7 +19,6 @@ def create_prediction_service(model_name):
 
 
 if __name__ == "__main__":
-    # rh.set_folder('~/bert/sentiment_analysis', create=True)
     predict_fn = create_prediction_service('yelp_fine_tuned_bert')
 
     bert_sa_service = rh.function(fn=predict_fn,

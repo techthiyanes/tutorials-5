@@ -11,6 +11,7 @@ def evaluate_model(preprocessed_dataset, model):
     model = pickle.loads(model.data)
     accelerator = Accelerator()
 
+    # Load the data itself on the cluster
     preprocessed_data = preprocessed_dataset.fetch()
 
     eval_dataloader = DataLoader(preprocessed_data, shuffle=False, batch_size=32)
@@ -35,19 +36,18 @@ def evaluate_model(preprocessed_dataset, model):
 
 
 if __name__ == "__main__":
-    # rh.set_folder('~/bert/sentiment_analysis', create=True)
+    v100 = rh.cluster('^rh-4-v100', instance_type='V100:4').up_if_not()
 
-    v100 = rh.cluster('^rh-4-v100').up_if_not()
-
-    # Load model blob object (generated and saved in P02) - we'll fetch the data on the cluster
-    trained_model = rh.blob(name='yelp_fine_tuned_bert', dryrun=True)
+    # Load model we created in P02 (note: we'll load the blob itself on the cluster later)
+    trained_model = rh.Blob.from_name(name='yelp_fine_tuned_bert')
 
     model_eval = rh.function(fn=evaluate_model,
                              system=v100,
                              name='evaluate_model',
-                             reqs=['scikit-learn'])
+                             reqs=['scikit-learn', 's3fs'])
 
-    preprocessed_dataset = rh.table(name="preprocessed-tokenized-dataset", dryrun=True)
+    # Load the dataset we created in P01 (note: we'll load the table itself on the cluster later)
+    preprocessed_dataset = rh.Table.from_name(name="preprocessed-tokenized-dataset")
 
     test_accuracy = model_eval(preprocessed_dataset, trained_model)
     print('Test accuracy:', test_accuracy)
