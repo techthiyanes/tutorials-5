@@ -34,26 +34,26 @@ def tokenize_dataset(hf_dataset):
 
 if __name__ == "__main__":
     preproc = rh.function(fn=tokenize_dataset,
-                      system="^rh-32-cpu",
-                      reqs=['local:./', 'datasets', 'transformers'],
-                      name="BERT_preproc_32cpu")
+                          system="^rh-32-cpu",
+                          reqs=['local:./', 'datasets', 'transformers'],
+                          name="BERT_preproc_32cpu")
 
     # Not being saved, just a helper here to load the dataset on the cluster instead of locally
     # (and then sending it up).
     remote_load_dataset = rh.function(fn=load_dataset,
-                                  system=preproc.system,
-                                  dryrun=True)
+                                      system=preproc.system,
+                                      dryrun=True)
 
     # Notice how we call this function with `.remote` - this calls the function async, leaves the result on the
     # cluster, and gives us back a reference (Ray ObjectRef) to the object that we can then pass to other functions
     # on the cluster, and they'll auto-resolve to our object.
     yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
 
-    # from_cluster converts the table's file references to sftp file references without copying it
-    preprocessed_yelp = preproc(yelp_dataset_ref).from_cluster(preproc.system)
+    # converts the table's file references to sftp file references without copying it
+    preprocessed_yelp = preproc(yelp_dataset_ref)
 
     batches = preprocessed_yelp.stream(batch_size=100)
-    for idx, batch in enumerate(batches):
+    for batch in batches:
         print(batch)
         break
 

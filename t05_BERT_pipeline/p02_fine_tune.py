@@ -34,7 +34,7 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
             optimizer.zero_grad()
             progress_bar.update(1)
 
-    # Save as anonymous blob to local file system on the cluster
+    # Save as anonymous blob to local file system on the cluster ( in '.cache/blobs/..')
     return rh.blob(data=pickle.dumps(model)).save()
 
 
@@ -49,20 +49,25 @@ def get_optimizer(model, lr):
 
 
 if __name__ == "__main__":
-    gpu = rh.cluster(name='rh-a10x').up_if_not()
-    preprocessed_yelp = rh.table(name="preprocessed-tokenized-dataset")
+    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1').up_if_not()
+
+    # Note: If you have AWS creds, you'll need to use an A10G as AWS doesn't have single A100s available
+    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').up_if_not()
+
+    # Load the preprocessed table we built in p01
+    preprocessed_yelp = rh.table(name="preprocessed-tokenized-dataset", dryrun=True)
 
     ft_model = rh.function(fn=fine_tune_model,
-                       system=gpu,
-                       load_secrets=True,
-                       name='finetune_ddp_1gpu').save()
+                           system=gpu,
+                           load_secrets=True,
+                           name='finetune_ddp_1gpu').save()
 
     # The load_secrets argument above will load the secrets onto the cluster from your Runhouse account (api.run.house),
     # and will only work if you've already uploaded secrets to runhouse (e.g. during `runhouse login`). You need your
     # SkyPilot ssh keys on the gpu cluster because we're streaming in the table directly from the 32-cpu cluster.
 
     # If you'd like to run this tutorial without an account or saved secrets, you can uncomment this line:
-    # ft_model.send_secrets(providers=['sky'])
+    ft_model.send_secrets()
 
     # Send get_model and get_optimizer to the cluster so we can call .remote and instantiate them on the cluster
     model_on_gpu = rh.function(fn=get_model, system=gpu, dryrun=True)
@@ -75,8 +80,7 @@ if __name__ == "__main__":
     trained_model = ft_model(bert_model,
                              adam_optimizer,
                              preprocessed_yelp,
-                             num_epochs=3).from_cluster(gpu)
+                             num_epochs=3)
 
-    # Save model in s3 bucket, and the metadata in Runhouse RNS
-    print("trained model:\n", trained_model)
+    # Copy model from the cluster to s3 bucket, and save the model's metadata to Runhouse RNS for re-loading later
     trained_model.to('s3').save(name='yelp_fine_tuned_bert')
