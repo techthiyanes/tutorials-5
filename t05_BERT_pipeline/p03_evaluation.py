@@ -1,38 +1,40 @@
-import ray.cloudpickle as pickle
-
+import logging
 from datasets import load_metric
 from accelerate import Accelerator
 import torch
 import runhouse as rh
 from torch.utils.data import DataLoader
+import ray.cloudpickle as pickle
 
 
-def evaluate_model(preprocessed_dataset, model):
-    model = pickle.loads(model.data)
+def evaluate_model(preprocessed_data, trained_model, batch_size=32):
+    model = pickle.loads(trained_model.data)
     accelerator = Accelerator()
 
     # Load the data itself on the cluster
-    preprocessed_data = preprocessed_dataset.fetch()
-
-    eval_dataloader = DataLoader(preprocessed_data, shuffle=False, batch_size=32)
+    eval_dataloader = DataLoader(preprocessed_data, shuffle=False, batch_size=batch_size)
     eval_dataloader, model = accelerator.prepare(eval_dataloader, model)
 
     metric = load_metric("accuracy")
     model.eval()
 
     for batch in eval_dataloader:
-        batch_labels = batch.pop("labels")
-        batch = {k: torch.stack(v) if isinstance(v, list) else v for k, v in batch.items()}
+        try:
+            labels = batch.pop("labels")
+            batch = {k: torch.stack(v).reshape([batch_size, len(v)]) for k, v in batch.items()}
 
-        with torch.no_grad():
-            outputs = model(**batch)
+            with torch.no_grad():
+                outputs = model(**batch)
 
-        logits = outputs.logits
-        predictions = torch.argmax(logits, dim=-1)
-        metric.add_batch(predictions=predictions, references=batch_labels)
+            logits = outputs.logits
+            predictions = torch.argmax(logits, dim=-1)
+            metric.add_batch(predictions=predictions, references=labels)
 
-    metric.compute()
-    return metric
+        except Exception as e:
+            logging.error(f'Failed to predict batch: {e}')
+
+    accuracy = metric.compute()
+    return accuracy
 
 
 if __name__ == "__main__":
@@ -46,8 +48,9 @@ if __name__ == "__main__":
                              name='evaluate_model',
                              reqs=['scikit-learn', 's3fs'])
 
-    # Load the dataset we created in P01 (note: we'll load the table itself on the cluster later)
+    # Load the dataset we created in P01
     preprocessed_dataset = rh.Table.from_name(name="preprocessed-tokenized-dataset")
+    preprocessed_data = preprocessed_dataset.fetch()
 
-    test_accuracy = model_eval(preprocessed_dataset, trained_model)
+    test_accuracy = model_eval(preprocessed_data, trained_model)
     print('Test accuracy:', test_accuracy)
