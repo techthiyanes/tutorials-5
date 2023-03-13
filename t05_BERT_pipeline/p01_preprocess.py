@@ -33,8 +33,10 @@ def tokenize_dataset(hf_dataset):
 
 
 if __name__ == "__main__":
+    cpu = rh.cluster("^rh-32-cpu").up_if_not()
+
     preproc = rh.function(fn=tokenize_dataset,
-                          system="^rh-32-cpu",
+                          system=cpu,
                           reqs=['local:./', 'datasets', 'transformers'],
                           name="BERT_preproc_32cpu")
 
