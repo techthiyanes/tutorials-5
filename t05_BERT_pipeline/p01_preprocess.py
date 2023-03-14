@@ -38,7 +38,7 @@ if __name__ == "__main__":
     preproc = rh.function(fn=tokenize_dataset,
                           system=cpu,
                           reqs=['local:./', 'datasets', 'transformers'],
-                          name="BERT_preproc_32cpu")
+                          name="BERT_preproc_32cpu").save()
 
     # Not being saved, just a helper here to load the dataset on the cluster instead of locally
     # (and then sending it up).
@@ -49,14 +49,18 @@ if __name__ == "__main__":
     # Notice how we call this function with `.remote` - this calls the function async, leaves the result on the
     # cluster, and gives us back a reference (Ray ObjectRef) to the object that we can then pass to other functions
     # on the cluster, and they'll auto-resolve to our object.
-    yelp_dataset_ref = remote_load_dataset.remote("yelp_review_full", split='train[:1%]')
+    yelp_train_ref = remote_load_dataset.remote("yelp_review_full", split='train[:10%]')
+    yelp_test_ref = remote_load_dataset.remote("yelp_review_full", split='test[:10%]')
 
     # converts the table's file references to sftp file references without copying it
-    preprocessed_yelp = preproc(yelp_dataset_ref)
+    preprocessed_yelp_train = preproc(yelp_train_ref, stream_logs=True)
+    preprocessed_yelp_test = preproc(yelp_test_ref, stream_logs=True)
 
-    batches = preprocessed_yelp.stream(batch_size=100)
+    preprocessed_yelp_test.stream_format = 'torch'
+    batches = preprocessed_yelp_test.stream(batch_size=32)
     for batch in batches:
         print(batch)
         break
 
-    preprocessed_yelp.save(name="preprocessed-tokenized-dataset", overwrite=True)
+    preprocessed_yelp_train.save(name="preprocessed-yelp-train", overwrite=True)
+    preprocessed_yelp_test.save(name="preprocessed-yelp-test", overwrite=True)

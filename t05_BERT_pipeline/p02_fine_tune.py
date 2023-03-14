@@ -1,15 +1,14 @@
+import runhouse as rh
 from transformers import AutoModelForSequenceClassification, get_scheduler
 import ray.cloudpickle as pickle
 import torch
-import runhouse as rh
-from tqdm.auto import tqdm  # progress bar
+from tqdm.auto import tqdm
 
 # Based on https://huggingface.co/docs/transformers/training#train-in-native-pytorch
 
 def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_size=8):
     # Set data format to pytorch tensors
     preprocessed_table.stream_format = 'torch'
-    print(preprocessed_table._folder.data_config)
     device = torch.device("cuda")
     model.to(device)
 
@@ -18,13 +17,14 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
         name="linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
 
     progress_bar = tqdm(range(num_training_steps))
+    print("Training model.")
     model.train()
 
     # https://huggingface.co/course/chapter8/2?fw=pt
     for epoch in range(num_epochs):
         for batch in preprocessed_table.stream(batch_size=batch_size, as_dict=True):
             # TODO [JL] - Use a smaller torch type (IntTensor doesn't work)
-            batch = {k: v.type(torch.LongTensor).to(device) for k, v in batch.items()}
+            batch = {k: v.to(device).long() for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()
@@ -32,7 +32,7 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
             optimizer.step()
             lr_scheduler.step()
             optimizer.zero_grad()
-            progress_bar.update(1)
+            progress_bar.update(batch_size)
 
     # Save as anonymous blob to local file system on the cluster ( in '.cache/blobs/..')
     return rh.blob(data=pickle.dumps(model)).save()
@@ -49,14 +49,10 @@ def get_optimizer(model, lr):
 
 
 if __name__ == "__main__":
-    # For GCP, Azure, or Lambda Labs
-    gpu = rh.cluster(name='rh-a10x', instance_type='A100:1').up_if_not()
-
-    # Note: If you have AWS creds, you'll need to use an A10G as AWS doesn't have single A100s available
-    # gpu = rh.cluster(name='rh-a10x', instance_type='g5.2xlarge', provider='aws').up_if_not()
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
 
     # Load the preprocessed table we built in p01 - we'll stream the data directly on the cluster later on
-    preprocessed_yelp = rh.Table.from_name(name="preprocessed-tokenized-dataset")
+    preprocessed_yelp = rh.Table.from_name(name="preprocessed-yelp-train")
 
     ft_model = rh.function(fn=fine_tune_model,
                            system=gpu,
@@ -81,7 +77,9 @@ if __name__ == "__main__":
     trained_model = ft_model(bert_model,
                              adam_optimizer,
                              preprocessed_yelp,
-                             num_epochs=3)
+                             num_epochs=3,
+                             batch_size=32,
+                             stream_logs=True)
 
     # Copy model from the cluster to s3 bucket, and save the model's metadata to Runhouse RNS for re-loading later
     trained_model.to('s3').save(name='yelp_fine_tuned_bert')

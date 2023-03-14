@@ -1,56 +1,49 @@
+import runhouse as rh
 import logging
 from datasets import load_metric
-from accelerate import Accelerator
 import torch
-import runhouse as rh
-from torch.utils.data import DataLoader
 import ray.cloudpickle as pickle
+from tqdm.auto import tqdm
 
 
-def evaluate_model(preprocessed_data, trained_model, batch_size=32):
-    model = pickle.loads(trained_model.data)
-    accelerator = Accelerator()
-
-    # Load the data itself on the cluster
-    eval_dataloader = DataLoader(preprocessed_data, shuffle=False, batch_size=batch_size)
-    eval_dataloader, model = accelerator.prepare(eval_dataloader, model)
+def evaluate_model(model, preprocessed_test_set, batch_size=32):
+    model = pickle.loads(model.data)
+    preprocessed_test_set.stream_format = 'torch'
+    device = torch.device("cuda")
+    model.to(device)
 
     metric = load_metric("accuracy")
+    progress_bar = tqdm(range(len(preprocessed_test_set)))
+    print("Evaluating model.")
     model.eval()
 
-    for batch in eval_dataloader:
-        try:
-            labels = batch.pop("labels")
-            batch = {k: torch.stack(v).reshape([batch_size, len(v)]) for k, v in batch.items()}
+    for batch in preprocessed_test_set.stream(batch_size=batch_size, as_dict=True):
+        batch = {k: v.to(device).long() for k, v in batch.items()}
+        labels = batch.pop("labels")
 
-            with torch.no_grad():
-                outputs = model(**batch)
+        with torch.no_grad():
+            outputs = model(**batch)
 
-            logits = outputs.logits
-            predictions = torch.argmax(logits, dim=-1)
-            metric.add_batch(predictions=predictions, references=labels)
-
-        except Exception as e:
-            logging.error(f'Failed to predict batch: {e}')
+        logits = outputs.logits
+        predictions = torch.argmax(logits, dim=-1)
+        metric.add_batch(predictions=predictions, references=labels)
+        progress_bar.update(batch_size)
 
     accuracy = metric.compute()
     return accuracy
 
 
 if __name__ == "__main__":
-    v100 = rh.cluster('^rh-4-v100', instance_type='V100:4').up_if_not()
-
-    # Load model we created in P02 (note: we'll load the blob itself on the cluster later)
-    trained_model = rh.Blob.from_name(name='yelp_fine_tuned_bert')
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
 
     model_eval = rh.function(fn=evaluate_model,
-                             system=v100,
+                             system=gpu,
                              name='evaluate_model',
                              reqs=['scikit-learn', 's3fs'])
 
-    # Load the dataset we created in P01
-    preprocessed_dataset = rh.Table.from_name(name="preprocessed-tokenized-dataset")
-    preprocessed_data = preprocessed_dataset.fetch()
+    # Load model we created in P02 (note: we'll unpickle the file on the cluster later)
+    trained_model = rh.Blob.from_name(name='yelp_fine_tuned_bert')
+    preprocessed_yelp_test = rh.Table.from_name(name="preprocessed-yelp-test")
 
-    test_accuracy = model_eval(preprocessed_data, trained_model)
+    test_accuracy = model_eval(trained_model, preprocessed_yelp_test, batch_size=64, stream_logs=True)
     print('Test accuracy:', test_accuracy)
