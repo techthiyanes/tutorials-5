@@ -1,43 +1,36 @@
 import pickle
 
 import runhouse as rh
+import torch
 
-from p01_preprocess import tokenize_function
+from p01_preprocess import tokenizer
 
 
-def create_prediction_service(model_name):
-    def predict_from_text(samples, refresh_model=False):
-        sa_model = rh.get_pinned_object(model_name)
-        if sa_model is None or refresh_model:
-            sa_model = pickle.loads(rh.blob(name=model_name).data).to("cuda")
-            rh.pin_to_memory(model_name, sa_model)
+def predict_sentiment(model, samples):
+    sa_model = rh.get_pinned_object(model.name)
+    if sa_model is None:
+        sa_model = pickle.loads(model.data).to("cuda")
+        rh.pin_to_memory(model.name, sa_model)
 
-        tokens = tokenize_function(samples)
-        return sa_model(tokens)
+    inputs = tokenizer(samples, padding="max_length", truncation=True, return_tensors="pt").to('cuda')
+    with torch.no_grad():
+        logits = sa_model(**inputs).logits
 
-    return predict_from_text
-
+    predicted_class_id = logits.argmax(dim=1).tolist()
+    return predicted_class_id
 
 if __name__ == "__main__":
-    predict_fn = create_prediction_service('yelp_fine_tuned_bert')
-
-    bert_sa_service = rh.function(fn=predict_fn,
-                                  system="^rh-1-cpu",
-                                  name="prediction_service")
+    gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
+    bert_sa_service = rh.function(fn=predict_sentiment).to(system=gpu, reqs=['./', 's3fs'])
     new_examples = [
-        'This place is sick!',
-        'The service left much to be desired.',
+        'This place is excellent!',
+        'The service was horrible.',
         'The appetizers were hit or miss.',
         'The elote ribs are a must.',
     ]
-    sentiment_scores = bert_sa_service(new_examples)
+    ft_bert = rh.blob(name='yelp_fine_tuned_bert')
+    sentiment_scores = bert_sa_service(ft_bert, new_examples)
     print('Test samples and sentiment scores:')
     [print(f'{sample}: {score}') for (sample, score) in zip(new_examples, sentiment_scores)]
 
-    # TODO show sharing.
-    # Collaborators or other environments can use the following to get the microservice callable,
-    # without any additional installations.
-    # BERT_sa_service = rh.function(name="<your username>/bert/sentiment_analysis/prediction_service")
-    # Note that I can manage who has access to my Functions, and all my other Runhouse resources, via
-    # a single access control plane. I can share them with individual Runhouse accounts, my team,
-    # my company, or the general public.
+    bert_sa_service.save(name='bert_sa_service')

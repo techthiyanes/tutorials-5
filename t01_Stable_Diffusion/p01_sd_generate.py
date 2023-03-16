@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     generate_gpu.save(name='sd_generate')
 
-    gpu.keep_warm()
+    gpu.keep_warm()  # to suspend the cluster autostop (default 30 minutes)
     # gpu.teardown()  # to terminate the cluster immediately
