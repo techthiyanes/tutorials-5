@@ -23,7 +23,6 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
     # https://huggingface.co/course/chapter8/2?fw=pt
     for epoch in range(num_epochs):
         for batch in preprocessed_table.stream(batch_size=batch_size, as_dict=True):
-            # TODO [JL] - Use a smaller torch type (IntTensor doesn't work)
             batch = {k: v.to(device).long() for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
@@ -35,7 +34,7 @@ def fine_tune_model(model, optimizer, preprocessed_table, num_epochs=3, batch_si
             progress_bar.update(batch_size)
 
     # Save as anonymous blob to local file system on the cluster ( in '.cache/blobs/..')
-    return rh.blob(data=pickle.dumps(model)).save()
+    return rh.blob(data=pickle.dumps(model)).write()
 
 
 def get_model(num_labels, model_id='bert-base-cased'):

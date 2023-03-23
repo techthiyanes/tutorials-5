@@ -11,8 +11,8 @@ def tokenize_function(examples):
 
 
 def tokenize_dataset(hf_dataset):
-    if isinstance(hf_dataset, str) and rh.exists(hf_dataset):
-        hf_dataset = rh.table(name=hf_dataset).convert_to('hf_dataset')
+    if isinstance(hf_dataset, rh.Table):
+        hf_dataset = hf_dataset.convert_to('hf_dataset')
 
     tokenized_datasets = hf_dataset.map(tokenize_function,
                                         input_columns=['text'],
@@ -27,9 +27,9 @@ def tokenize_dataset(hf_dataset):
     tokenized_datasets = tokenized_datasets.rename_column("label", "labels")
 
     # We'll return the table object here so the user of this service can save it to whatever datastore they
-    # prefer, under whichever Runhouse name they prefer. We need to call save() to write it down to the local
+    # prefer, under whichever Runhouse name they prefer. We need to call write() to write it down to the local
     # filesystem on the cluster, as we're only returning a reference to the user rather than the full dataset.
-    return rh.table(data=tokenized_datasets).save()
+    return rh.table(data=tokenized_datasets).write()
 
 
 if __name__ == "__main__":

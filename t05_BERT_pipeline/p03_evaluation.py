@@ -1,5 +1,4 @@
 import runhouse as rh
-import logging
 from datasets import load_metric
 import torch
 import ray.cloudpickle as pickle

@@ -13,7 +13,7 @@ def simple_bert_fine_tuning_service(dataset,
     preproc_table_name = dataset.name + "_preprocessed"
     if not rh.exists(name=preproc_table_name, resource_type='table'):
         preproc = rh.function(name="BERT_preproc_32cpu")
-        preprocessed_table = preproc(dataset).from_cluster(preproc.system)
+        preprocessed_table = preproc(dataset)
         preprocessed_table.save(name=preproc_table_name)
     else:
         preprocessed_table = rh.table(name=preproc_table_name)
@@ -27,7 +27,7 @@ def simple_bert_fine_tuning_service(dataset,
         trained_model = ft_model(preprocessed_table,
                                  bert_model,
                                  adam_optimizer,
-                                 epochs=epochs).from_cluster(ft_model.system)
+                                 epochs=epochs)
         trained_model.save(name=model_name)
     else:
         trained_model = pickle.loads(rh.blob(name=model_name).data)
