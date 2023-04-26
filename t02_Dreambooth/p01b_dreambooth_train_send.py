@@ -10,7 +10,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:main',
         system=gpu,
         reqs=['pip:./diffusers', 'datasets', 'accelerate', 'transformers',
-              'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'],
+              'torch', 'torchvision'],
         name='train_dreambooth')
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
                     'torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = True'])

@@ -67,8 +67,7 @@ without even needing to clone the code! First we install the necessary packages 
 gpu.install_packages([rh.GitPackage(git_url='https://github.com/huggingface/diffusers.git',
                                     install_method='pip', revision='v0.11.1'),
                      'datasets', 'accelerate', 'transformers', 'bitsandbytes',
-                     'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
-                     'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'])
+                     'torch', 'torchvision'])
 ```
 
 To run the training script, simply call `gpu.run` and input in the launch command as if you were
@@ -199,9 +198,7 @@ training_function_gpu = rh.function(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
     system=gpu,
     reqs=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
-        'torch --upgrade --extra-index-url https://download.pytorch.org/whl/cu117',
-        'torchvision --upgrade --extra-index-url https://download.pytorch.org/whl/cu117'
-        ],
+        'torch', 'torchvision'],
     name='train_dreambooth')
 ```
 

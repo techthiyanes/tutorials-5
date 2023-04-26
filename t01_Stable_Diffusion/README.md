@@ -34,10 +34,8 @@ And if you ran either of the above and would like to switch back to the original
 # For GCP, Azure, or Lambda Labs
 rh.cluster(name='rh-a10x', instance_type='A100:1').save()
 ```
-If you'd like to run these tutorials on a different kind of GPU, make sure to change the torch version appropriately
-in the `requirements.txt` file of this repo (e.g. for a V100, remove the 
-`"--extra-index-url https://download.pytorch.org/whl/cu117"` line). In many tutorials, those requirements will be 
-installed on your cluster when you setup a function.
+If you'd like to run these tutorials on a different kind of GPU, Runhouse will detect the specific torch 
+packages to install based on the CUDA version detected on the cluster. 
 
 ## 01 Stable Diffusion on a Cloud GPU in 5 lines of code
 
