@@ -38,7 +38,7 @@ if __name__ == "__main__":
     model_eval = rh.function(fn=evaluate_model,
                              system=gpu,
                              name='evaluate_model',
-                             reqs=['scikit-learn', 's3fs'])
+                             env=['scikit-learn', 's3fs'])
 
     # Load model we created in P02 (note: we'll unpickle the file on the cluster later)
     trained_model = rh.Blob.from_name(name='yelp_fine_tuned_bert')

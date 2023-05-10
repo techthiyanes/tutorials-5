@@ -16,9 +16,9 @@ if __name__ == "__main__":
     gpu = rh.cluster(name='rh-4-v100', instance_type='V100:4', provider='cheapest', use_spot=False)
     # gpu.restart_grpc_server(resync_rh=True)
     train_gpu = rh.function(
-        fn='https://github.com/huggingface/accelerate/blob/v0.15.0/examples/nlp_example.py:training_function',
+        fn='https://github.com/huggingface/accelerate/blob/v0.18.0/examples/nlp_example.py:training_function',
         system=gpu,
-        reqs=['./', 'pip:./accelerate', 'torch==1.12.0', 'evaluate', 'transformers',
+        env=['./', 'pip:./accelerate', 'torch==1.12.0', 'evaluate', 'transformers',
               'datasets==2.3.2', 'scipy', 'scikit-learn', 'tqdm', 'tensorboard'],
         name='train_bert_glue')
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     train_args = argparse.Namespace(cpu=False, mixed_precision='fp16')
     hps = {"lr": 2e-5, "num_epochs": 3, "seed": 42, "batch_size": 16}
-    launch_training(train_gpu, hps, train_args)
+    launch_training(train_gpu, hps, train_args, stream_logs=True)
 
     # Alternatively, we can just run as instructed in the README (but only because there's already a wrapper CLI):
     # gpu.run(['accelerate launch --multi_gpu accelerate/examples/nlp_example.py'])

@@ -10,7 +10,7 @@ def sd_generate(prompt, num_images=1, steps=100, guidance_scale=7.5, model_id='s
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    generate_gpu = rh.function(fn=sd_generate).to(gpu, reqs=['./'])
+    generate_gpu = rh.function(fn=sd_generate).to(gpu, env=['./'])
 
     images = generate_gpu(prompt='A hot dog made of matcha powder.', num_images=4, steps=50)
     [image.show() for image in images]

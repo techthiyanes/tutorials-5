@@ -9,7 +9,7 @@ if __name__ == "__main__":
     train_gpu = rh.function(
         fn='https://github.com/huggingface/accelerate/blob/v0.15.0/examples/nlp_example.py:training_function',
         system=gpu,
-        reqs=['pip:./accelerate', 'transformers', 'datasets', 'evaluate',
+        env=['pip:./accelerate', 'transformers', 'datasets', 'evaluate',
               'tqdm', 'scipy', 'scikit-learn', 'tensorboard', 'torch'],
         name='train_bert_glue')
 

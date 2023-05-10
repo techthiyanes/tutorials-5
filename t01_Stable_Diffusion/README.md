@@ -88,11 +88,11 @@ and <2GB. This limit is subject to change if needed.
 
 ```python
 # This function runs the `sd_generate` function on `gpu` cluster
-# Setting reqs=['./'] will sync over this git repo and install its dependencies
+# Setting env=['./'] will sync over this git repo and install its dependencies
 # If the cluster is not up yet, this step will also spin up the cluster
-generate_gpu = rh.function(fn=sd_generate).to(gpu, reqs=['./'])
+generate_gpu = rh.function(fn=sd_generate).to(gpu, env=['./'])
 # or, using a slightly different API with the same outcome
-# generate_gpu = rh.function(fn=sd_generate, system=gpu, reqs=['./'])
+# generate_gpu = rh.function(fn=sd_generate, system=gpu, env=['./'])
 
 
 rh_prompt = 'A digital illustration of a woman running on the roof of a house.'
@@ -217,7 +217,7 @@ gpu = rh.cluster(name='rh-a10x', instance_type='A100:1') # GCP and Azure
 
 flan_t5_generate = rh.function(fn=causal_lm_generate,
                             system=gpu,
-                            reqs=['local:./'],
+                            env=['local:./'],
                             name='flan_t5_generate')
 
 my_prompt = "A detailed oil painting of"

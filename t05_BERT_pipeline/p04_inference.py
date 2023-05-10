@@ -21,7 +21,7 @@ def predict_sentiment(model, samples):
 
 if __name__ == "__main__":
     gpu = rh.cluster(name='rh-a10x') if rh.exists('rh-a10x') else rh.cluster(name='rh-a10x', instance_type='A100:1')
-    bert_sa_service = rh.function(fn=predict_sentiment).to(system=gpu, reqs=['./', 's3fs'])
+    bert_sa_service = rh.function(fn=predict_sentiment).to(system=gpu, env=['./', 's3fs'])
     new_examples = [
         'This place is excellent!',
         'The service was horrible.',

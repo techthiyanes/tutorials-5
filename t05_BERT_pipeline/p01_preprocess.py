@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     preproc = rh.function(fn=tokenize_dataset,
                           system=cpu,
-                          reqs=['local:./', 'datasets', 'transformers'],
+                          env=['local:./', 'datasets', 'transformers'],
                           name="BERT_preproc_32cpu").save()
 
     # Not being saved, just a helper here to load the dataset on the cluster instead of locally

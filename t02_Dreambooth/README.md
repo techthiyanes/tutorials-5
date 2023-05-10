@@ -139,7 +139,7 @@ gpu = rh.cluster(name='rh-a10x')
 my_space = rh.function(
     fn=launch_gradio_space,
     system=gpu,
-    reqs=['./', 'gradio', 'fairscale', 'ftfy','huggingface-hub', 'Pillow', 
+    env=['./', 'gradio', 'fairscale', 'ftfy','huggingface-hub', 'Pillow', 
           'timm', 'open_clip_torch', 'clip-interrogator==0.3.1',]
     )
 ```
@@ -197,7 +197,7 @@ name to `fn` in our function object.
 training_function_gpu = rh.function(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:main',
     system=gpu,
-    reqs=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
+    env=['datasets', 'accelerate', 'transformers', 'diffusers==0.10.0',
         'torch', 'torchvision'],
     name='train_dreambooth')
 ```
@@ -208,7 +208,7 @@ same GitHub file:
 create_train_args = rh.function(
     fn='https://github.com/huggingface/diffusers/blob/main/examples/dreambooth/train_dreambooth.py:parse_args',
     system=gpu,
-    reqs=[]
+    env=[]
 )
 train_args = create_train_args(
     input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',

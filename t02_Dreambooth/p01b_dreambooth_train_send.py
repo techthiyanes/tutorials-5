@@ -9,7 +9,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
     training_function_gpu = rh.function(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:main',
         system=gpu,
-        reqs=['pip:./diffusers', 'datasets', 'accelerate', 'transformers',
+        env=['pip:./diffusers', 'datasets', 'accelerate', 'transformers',
               'torch', 'torchvision'],
         name='train_dreambooth')
     gpu.run_python(['import torch; torch.backends.cuda.matmul.allow_tf32 = True; '
@@ -20,7 +20,7 @@ def train_dreambooth(input_images_dir, class_name='person'):
 
     create_train_args = rh.function(
         fn='https://github.com/huggingface/diffusers/blob/v0.11.1/examples/dreambooth/train_dreambooth.py:parse_args',
-        system=gpu, reqs=[])
+        system=gpu, env=[])
     train_args = create_train_args(input_args=['--pretrained_model_name_or_path', 'stabilityai/stable-diffusion-2-base',
                                                '--instance_data_dir', remote_image_dir,
                                                '--instance_prompt', f'a photo of sks {class_name}'])
